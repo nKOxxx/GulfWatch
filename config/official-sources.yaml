@@ -1,0 +1,382 @@
+# UAE Official Sources - Single Source of Truth
+# These accounts are treated as authoritative without requiring cross-verification
+
+# CRITERIA FOR INCLUSION:
+# 1. Government entity (federal or emirate-level)
+# 2. Official verified account (blue check or equivalent)
+# 3. Ruler or royal family member
+# 4. Civil defense, police, or security authority
+# 5. Official state media
+
+sources:
+  # ============================================
+  # FEDERAL UAE GOVERNMENT
+  # ============================================
+  
+  - name: "UAE Government"
+    platform: "twitter"
+    handle: "@uaegov"
+    type: "federal_government"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "UAE Government"
+    platform: "instagram"
+    handle: "@uaegov"
+    type: "federal_government"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "WAM News Agency"
+    platform: "twitter"
+    handle: "@wamnews"
+    type: "state_media"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "WAM News Agency"
+    platform: "instagram"
+    handle: "@wam_news"
+    type: "state_media"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Ministry of Interior UAE"
+    platform: "twitter"
+    handle: "@moiuae"
+    type: "security"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "UAE Civil Defense"
+    platform: "twitter"
+    handle: "@uae_cd"
+    type: "civil_defense"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "National Emergency Crisis and Disasters Management Authority"
+    platform: "twitter"
+    handle: "@ncema_uae"
+    type: "emergency_management"
+    credibility: 100
+    priority: "immediate"
+    
+  # ============================================
+  # DUBAI
+  # ============================================
+  
+  - name: "HH Sheikh Mohammed bin Rashid Al Maktoum"
+    platform: "twitter"
+    handle: "@hhshkmohd"
+    type: "ruler"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "HH Sheikh Mohammed bin Rashid Al Maktoum"
+    platform: "instagram"
+    handle: "@hhshkmohd"
+    type: "ruler"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Dubai Media Office"
+    platform: "twitter"
+    handle: "@dxbmediaoffice"
+    type: "media_office"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Dubai Police"
+    platform: "twitter"
+    handle: "@dubaipolicehq"
+    type: "police"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Dubai Civil Defense"
+    platform: "twitter"
+    handle: "@dubai_civildef"
+    type: "civil_defense"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Dubai Municipality"
+    platform: "twitter"
+    handle: "@dubaimunicipality"
+    type: "municipality"
+    credibility: 95
+    priority: "immediate"
+    
+  - name: "Dubai Airports"
+    platform: "twitter"
+    handle: "@dubaiairports"
+    type: "transport"
+    credibility: 95
+    priority: "immediate"
+    
+  - name: "RTA Dubai"
+    platform: "twitter"
+    handle: "@rta_dubai"
+    type: "transport"
+    credibility: 90
+    priority: "immediate"
+    
+  # ============================================
+  # ABU DHABI
+  # ============================================
+  
+  - name: "HH Sheikh Mohamed bin Zayed Al Nahyan"
+    platform: "twitter"
+    handle: "@mohamedbinzayed"
+    type: "ruler"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "HH Sheikh Mohamed bin Zayed Al Nahyan"
+    platform: "instagram"
+    handle: "@mohamedbinzayed"
+    type: "ruler"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Abu Dhabi Media Office"
+    platform: "twitter"
+    handle: "@admediaoffice"
+    type: "media_office"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Abu Dhabi Police"
+    platform: "twitter"
+    handle: " "@ad_policehq"
+    type: "police"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Abu Dhabi Civil Defense"
+    platform: "twitter"
+    handle: "@adcdauthority"
+    type: "civil_defense"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Abu Dhabi Government"
+    platform: "twitter"
+    handle: "@abudhabi_gov"
+    type: "government"
+    credibility: 100
+    priority: "immediate"
+    
+  # ============================================
+  # SHARJAH
+  # ============================================
+  
+  - name: "HH Sheikh Dr. Sultan bin Muhammad Al Qasimi"
+    platform: "twitter"
+    handle: "@sultanalqasimi"
+    type: "ruler"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Sharjah Government"
+    platform: "twitter"
+    handle: "@sharjah_gov"
+    type: "government"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Sharjah Police"
+    platform: "twitter"
+    handle: "@shj_police"
+    type: "police"
+    credibility: 100
+    priority: "immediate"
+    
+  # ============================================
+  # AJMAN
+  # ============================================
+  
+  - name: "HH Sheikh Humaid bin Rashid Al Nuaimi"
+    platform: "twitter"
+    handle: "@ajman_ruler"
+    type: "ruler"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Ajman Government"
+    platform: "twitter"
+    handle: "@ajman_gov"
+    type: "government"
+    credibility: 100
+    priority: "immediate"
+    
+  # ============================================
+  # RAS AL KHAIMAH
+  # ============================================
+  
+  - name: "HH Sheikh Saud bin Saqr Al Qasimi"
+    platform: "twitter"
+    handle: "@rak_ruler"
+    type: "ruler"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Ras Al Khaimah Government"
+    platform: "twitter"
+    handle: "@rak_gov"
+    type: "government"
+    credibility: 100
+    priority: "immediate"
+    
+  # ============================================
+  # FUJAIRAH
+  # ============================================
+  
+  - name: "HH Sheikh Hamad bin Mohammed Al Sharqi"
+    platform: "twitter"
+    handle: "@fujairah_ruler"
+    type: "ruler"
+    credibility: 100
+    priority: "immediate"
+    
+  - name: "Fujairah Government"
+    platform: "twitter"
+    handle: "@fujairah_gov"
+    type: "government"
+    credibility: 100
+    priority: "immediate"
+    
+  # ============================================
+  # UMM AL QUWAIN
+  # ============================================
+  
+  - name: "HH Sheikh Saud bin Rashid Al Mualla"
+    platform: "twitter"
+    handle: "@uaq_ruler"
+    type: "ruler"
+    credibility: 100
+    priority: "immediate"
+    
+  # ============================================
+  # UAE MEDIA (Official)
+  # ============================================
+  
+  - name: "Gulf News"
+    platform: "twitter"
+    handle: "@gulf_news"
+    type: "verified_media"
+    credibility: 90
+    priority: "high"
+    
+  - name: "The National UAE"
+    platform: "twitter"
+    handle: "@thenationaluae"
+    type: "verified_media"
+    credibility: 90
+    priority: "high"
+    
+  - name: "Khaleej Times"
+    platform: "twitter"
+    handle: "@khaleejtimes"
+    type: "verified_media"
+    credibility: 90
+    priority: "high"
+    
+  - name: "Emirates News Agency"
+    platform: "twitter"
+    handle: "@wamnews"
+    type: "state_media"
+    credibility: 100
+    priority: "immediate"
+    
+  # ============================================
+  # OTHER OFFICIAL UAE
+  # ============================================
+  
+  - name: "Dubai Airport"
+    platform: "twitter"
+    handle: "@dubaiairports"
+    type: "transport"
+    credibility: 95
+    priority: "high"
+    
+  - name: "Abu Dhabi Airport"
+    platform: "twitter"
+    handle: "@auh_airport"
+    type: "transport"
+    credibility: 95
+    priority: "high"
+    
+  - name: "Etihad Airways"
+    platform: "twitter"
+    handle: "@etihad"
+    type: "airline"
+    credibility: 90
+    priority: "medium"
+    
+  - name: "Emirates Airline"
+    platform: "twitter"
+    handle: "@emirates"
+    type: "airline"
+    credibility: 90
+    priority: "medium"
+    
+  - name: "Dubai Tourism"
+    platform: "twitter"
+    handle: "@dubaitourism"
+    type: "tourism"
+    credibility: 85
+    priority: "medium"
+
+# ============================================
+# VERIFICATION RULES
+# ============================================
+
+rules:
+  # Single source is sufficient for these
+  single_source_trusted:
+    - type: "ruler"
+      min_credibility: 100
+    - type: "federal_government"
+      min_credibility: 100
+    - type: "state_media"
+      min_credibility: 100
+    - type: "civil_defense"
+      min_credibility: 100
+    - type: "emergency_management"
+      min_credibility: 100
+    - type: "police"
+      min_credibility: 100
+      
+  # These still require 2+ sources
+  require_multiple:
+    - type: "verified_media"
+      min_sources: 2
+    - type: "transport"
+      min_sources: 2
+    - type: "airline"
+      min_sources: 3
+    - type: "tourism"
+      min_sources: 3
+
+# ============================================
+# PRIORITY LEVELS
+# ============================================
+
+priority:
+  immediate: ["ruler", "federal_government", "emergency_management", "civil_defense"]
+  high: ["police", "state_media", "media_office"]
+  medium: ["verified_media", "transport", "municipality"]
+  low: ["airline", "tourism", "other"]
+
+# ============================================
+# NOTES
+# ============================================
+
+# - This list should be reviewed monthly
+# - Accounts must be verified (blue check or equivalent)
+# - Ruler accounts take precedence over all others
+# - Government accounts outrank media accounts
+# - Cross-check handles before adding new accounts
+# - Remove accounts that become inactive or unverified
