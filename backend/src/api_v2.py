@@ -128,6 +128,35 @@ async def startup():
         print(f"❌ Database initialization failed: {e}")
 
 
+@app.post("/admin/init-db")
+async def initialize_database():
+    """Initialize database - enable PostGIS and create tables"""
+    from sqlalchemy import text
+    from models import engine
+    
+    try:
+        with engine.connect() as conn:
+            # Enable PostGIS
+            conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis;"))
+            conn.execute(text("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"))
+            conn.commit()
+            
+            # Verify
+            result = conn.execute(text("SELECT PostGIS_Version();"))
+            version = result.scalar()
+            
+        # Create tables
+        init_database()
+        
+        return {
+            "status": "success",
+            "message": "Database initialized",
+            "postgis_version": version
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database initialization failed: {str(e)}")
+
+
 @app.get("/", response_model=StatusResponse)
 async def root(db: Session = Depends(get_db)):
     """API status"""
