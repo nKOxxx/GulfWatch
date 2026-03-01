@@ -39,41 +39,41 @@ A real-time situational awareness system that aggregates, verifies, and distribu
 These verified government accounts are treated as **authoritative sources** requiring no cross-verification:
 
 ### Federal Government
-| Account | Twitter/X | Instagram | Telegram | Type |
-|---------|-----------|-----------|----------|------|
-| UAE Government | [@uaegov](https://twitter.com/uaegov) | [@uaegov](https://instagram.com/uaegov) | — | Federal Government |
-| WAM News Agency | [@WAMnews](https://twitter.com/WAMnews) | [@wam_news](https://instagram.com/wam_news) | — | State Media |
-| Ministry of Interior | [@moiuae](https://twitter.com/moiuae) | — | [@moiuae](https://t.me/moiuae) | Security |
-| UAE Civil Defense | [@uae_cd](https://twitter.com/uae_cd) | — | — | Civil Defense |
-| NCEMA | [@ncema_uae](https://twitter.com/ncema_uae) | — | — | Emergency Management |
+| Account | X (Twitter) | Instagram | Type |
+|---------|-------------|-----------|------|
+| UAE Government | [@uaegov](https://x.com/uaegov) | [@uaegov](https://instagram.com/uaegov) | Federal Government |
+| WAM News Agency | [@WAMnews](https://x.com/WAMnews) | [@wam_news](https://instagram.com/wam_news) | State Media |
+| Ministry of Interior | [@moiuae](https://x.com/moiuae) | — | Security |
+| UAE Civil Defense | [@uae_cd](https://x.com/uae_cd) | — | Civil Defense |
+| NCEMA | [@ncema_uae](https://x.com/ncema_uae) | — | Emergency Management |
 
 ### Rulers
-| Account | Twitter/X | Instagram | Telegram | Type |
-|---------|-----------|-----------|----------|------|
-| HH Sheikh Mohamed bin Zayed | [@mohamedbinzayed](https://twitter.com/mohamedbinzayed) | [@mohamedbinzayed](https://instagram.com/mohamedbinzayed) | — | President of UAE |
-| HH Sheikh Mohammed bin Rashid | [@hhshkmohd](https://twitter.com/hhshkmohd) | [@hhshkmohd](https://instagram.com/hhshkmohd) | — | Dubai Ruler |
-| HH Sheikh Dr. Sultan Al Qasimi | [@sultanalqasimi](https://twitter.com/sultanalqasimi) | — | — | Sharjah Ruler |
+| Account | X (Twitter) | Instagram | Type |
+|---------|-------------|-----------|------|
+| HH Sheikh Mohamed bin Zayed | [@mohamedbinzayed](https://x.com/mohamedbinzayed) | [@mohamedbinzayed](https://instagram.com/mohamedbinzayed) | President of UAE |
+| HH Sheikh Mohammed bin Rashid | [@hhshkmohd](https://x.com/hhshkmohd) | [@hhshkmohd](https://instagram.com/hhshkmohd) | Dubai Ruler |
+| HH Sheikh Dr. Sultan Al Qasimi | [@sultanalqasimi](https://x.com/sultanalqasimi) | — | Sharjah Ruler |
 
 ### Dubai
-| Account | Twitter/X | Instagram | Telegram | Type |
-|---------|-----------|-----------|----------|------|
-| Dubai Police | [@dubaipolicehq](https://twitter.com/dubaipolicehq) | — | — | Police |
-| Dubai Civil Defense | [@dubai_civildef](https://twitter.com/dubai_civildef) | — | — | Civil Defense |
-| Dubai Media Office | [@dxbmediaoffice](https://twitter.com/dxbmediaoffice) | — | — | Media Office |
+| Account | X (Twitter) | Instagram | Type |
+|---------|-------------|-----------|------|
+| Dubai Police | [@dubaipolicehq](https://x.com/dubaipolicehq) | — | Police |
+| Dubai Civil Defense | [@dubai_civildef](https://x.com/dubai_civildef) | — | Civil Defense |
+| Dubai Media Office | [@dxbmediaoffice](https://x.com/dxbmediaoffice) | — | Media Office |
 
 ### Abu Dhabi
-| Account | Twitter/X | Instagram | Telegram | Type |
-|---------|-----------|-----------|----------|------|
-| Abu Dhabi Police | [@ad_policehq](https://twitter.com/ad_policehq) | — | — | Police |
-| Abu Dhabi Government | [@abudhabi_gov](https://twitter.com/abudhabi_gov) | — | — | Government |
-| Abu Dhabi Media Office | [@admediaoffice](https://twitter.com/admediaoffice) | — | — | Media Office |
+| Account | X (Twitter) | Instagram | Type |
+|---------|-------------|-----------|------|
+| Abu Dhabi Police | [@ad_policehq](https://x.com/ad_policehq) | — | Police |
+| Abu Dhabi Government | [@abudhabi_gov](https://x.com/abudhabi_gov) | — | Government |
+| Abu Dhabi Media Office | [@admediaoffice](https://x.com/admediaoffice) | — | Media Office |
 
 ### Verified Media (Require 2+ sources)
-| Account | Twitter/X | Instagram | Telegram | Type |
-|---------|-----------|-----------|----------|------|
-| Gulf News | [@gulf_news](https://twitter.com/gulf_news) | [@gulf_news](https://instagram.com/gulf_news) | — | Media |
-| The National | [@thenationaluae](https://twitter.com/thenationaluae) | [@thenationaluae](https://instagram.com/thenationaluae) | — | Media |
-| Khaleej Times | [@khaleejtimes](https://twitter.com/khaleejtimes) | [@khaleejtimes](https://instagram.com/khaleejtimes) | — | Media |
+| Account | X (Twitter) | Instagram | Type |
+|---------|-------------|-----------|------|
+| Gulf News | [@gulf_news](https://x.com/gulf_news) | [@gulf_news](https://instagram.com/gulf_news) | Media |
+| The National | [@thenationaluae](https://x.com/thenationaluae) | [@thenationaluae](https://instagram.com/thenationaluae) | Media |
+| Khaleej Times | [@khaleejtimes](https://x.com/khaleejtimes) | [@khaleejtimes](https://instagram.com/khaleejtimes) | Media |
 
 **[Full list in official-sources.yaml →](config/official-sources.yaml)**
 
