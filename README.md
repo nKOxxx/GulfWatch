@@ -32,6 +32,53 @@ A real-time situational awareness system that aggregates, verifies, and distribu
 3. **Partnership-Ready** — Architecture designed for government/private camera integration
 4. **Open Source** — Transparency builds trust
 
+---
+
+## 🇦🇪 UAE Official Sources (Single Source of Truth)
+
+These verified government accounts are treated as **authoritative sources** requiring no cross-verification:
+
+### Federal Government
+| Account | Platform | Type |
+|---------|----------|------|
+| [@uaegov](https://twitter.com/uaegov) | Twitter/X | Federal Government |
+| [@WAMnews](https://twitter.com/WAMnews) | Twitter/X | State Media |
+| [@moiuae](https://twitter.com/moiuae) | Twitter/X | Ministry of Interior |
+| [@uae_cd](https://twitter.com/uae_cd) | Twitter/X | Civil Defense |
+| [@ncema_uae](https://twitter.com/ncema_uae) | Twitter/X | Emergency Management |
+
+### Rulers
+| Account | Platform | Type |
+|---------|----------|------|
+| [@mohamedbinzayed](https://twitter.com/mohamedbinzayed) | Twitter/X | President of UAE |
+| [@hhshkmohd](https://twitter.com/hhshkmohd) | Twitter/X | Dubai Ruler |
+| [@sultanalqasimi](https://twitter.com/sultanalqasimi) | Twitter/X | Sharjah Ruler |
+
+### Dubai
+| Account | Platform | Type |
+|---------|----------|------|
+| [@dubaipolicehq](https://twitter.com/dubaipolicehq) | Twitter/X | Police |
+| [@dubai_civildef](https://twitter.com/dubai_civildef) | Twitter/X | Civil Defense |
+| [@dxbmediaoffice](https://twitter.com/dxbmediaoffice) | Twitter/X | Media Office |
+
+### Abu Dhabi
+| Account | Platform | Type |
+|---------|----------|------|
+| [@ad_policehq](https://twitter.com/ad_policehq) | Twitter/X | Police |
+| [@abudhabi_gov](https://twitter.com/abudhabi_gov) | Twitter/X | Government |
+| [@admediaoffice](https://twitter.com/admediaoffice) | Twitter/X | Media Office |
+
+### Verified Media (Require 2+ sources)
+| Account | Platform | Type |
+|---------|----------|------|
+| [@gulf_news](https://twitter.com/gulf_news) | Twitter/X | Media |
+| [@thenationaluae](https://twitter.com/thenationaluae) | Twitter/X | Media |
+| [@khaleejtimes](https://twitter.com/khaleejtimes) | Twitter/X | Media |
+
+**[Full list in official-sources.yaml →](config/official-sources.yaml)**
+
+---
+
 ## Architecture
 
 ```
