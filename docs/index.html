@@ -3,210 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gulf Watch — UAE Threat Map</title>
+    <title>Gulf Watch — Live UAE Feed</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a0a0f;
+            background: #000;
             color: #fff;
         }
         .app { display: flex; flex-direction: column; height: 100vh; }
         
         /* Header */
         .header {
-            background: #12121a;
+            background: #000;
             border-bottom: 1px solid #2a2a3a;
             padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .logo { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; }
-        .logo-icon { font-size: 20px; }
+        .logo { display: flex; align-items: center; gap: 8px; }
+        .logo-icon { font-size: 22px; }
+        .logo-text { font-size: 18px; font-weight: 700; }
         .live-badge {
             background: #ff4444;
             color: white;
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 12px;
             font-size: 11px;
-            font-weight: 600;
-            margin-left: 8px;
-        }
-        .region-select {
-            background: #1a1a25;
-            border: 1px solid #2a2a3a;
-            color: #fff;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-        }
-        
-        /* Main */
-        .main { flex: 1; display: grid; grid-template-columns: 1fr 340px; overflow: hidden; }
-        #map { width: 100%; height: 100%; background: #1a1a25; }
-        
-        /* Sidebar */
-        .sidebar {
-            background: #12121a;
-            border-left: 1px solid #2a2a3a;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        
-        .report-btn {
-            background: #ff4444;
-            color: white;
-            border: none;
-            padding: 14px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .report-btn:hover { background: #ff2222; }
-        
-        .alerts-section { flex: 1; overflow-y: auto; padding: 12px; }
-        .section-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            color: #a0a0b0;
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
-        }
-        
-        .alert-item {
-            background: #1a1a25;
-            border: 1px solid #2a2a3a;
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-left: 3px solid #ff4444;
-        }
-        .alert-item.interceptor { border-left-color: #00ff88; }
-        .alert-item.siren { border-left-color: #ffaa00; }
-        
-        .alert-time { font-size: 10px; color: #606070; margin-bottom: 2px; }
-        .alert-title { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
-        .alert-desc { font-size: 12px; color: #a0a0b0; line-height: 1.4; }
-        
-        /* Leaflet custom */
-        .leaflet-container { background: #0a0a0f; }
-        .leaflet-popup-content { color: #000; margin: 8px 12px; font-size: 13px; }
-        .leaflet-popup-content-wrapper { border-radius: 6px; }
-        
-        /* Custom markers */
-        .marker-confirmed {
-            background: #ff4444;
-            border: 2px solid white;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
+            font-weight: 700;
+            margin-left: 10px;
             animation: pulse 1.5s infinite;
         }
-        .marker-interceptor {
-            background: #00ff88;
-            border: 2px solid white;
-            border-radius: 50%;
-            width: 14px;
-            height: 14px;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.4); opacity: 0.7; }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
         
-        /* Stats */
-        .stats-bar {
-            background: #0f0f15;
-            border-top: 1px solid #2a2a3a;
-            padding: 8px 16px;
+        .nav-tabs {
             display: flex;
-            gap: 20px;
-            font-size: 11px;
+            gap: 4px;
         }
-        .stat { display: flex; align-items: center; gap: 4px; color: #a0a0b0; }
-        .stat-value { color: #00d4ff; font-weight: 600; }
-        
-        /* Mobile */
-        @media (max-width: 800px) {
-            .main { grid-template-columns: 1fr; grid-template-rows: 55% 45%; }
-            .sidebar { border-left: none; border-top: 1px solid #2a2a3a; }
+        .nav-tab {
+            background: #16181c;
+            border: none;
+            color: #71767b;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .nav-tab.active {
+            background: #fff;
+            color: #000;
         }
         
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
-            display: none;
+        /* Main Layout */
+        .main { flex: 1; display: grid; grid-template-columns: 1fr 380px; overflow: hidden; }
+        
+        /* Feed Column */
+        .feed-column {
+            border-right: 1px solid #2a2a3a;
+            overflow-y: auto;
+            background: #000;
+        }
+        
+        /* Compose Box */
+        .compose-box {
+            border-bottom: 1px solid #2a2a3a;
+            padding: 16px;
+            background: #000;
+        }
+        .compose-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #1d9bf0;
+            display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            padding: 16px;
+            font-size: 20px;
+            flex-shrink: 0;
         }
-        .modal-overlay.active { display: flex; }
+        .compose-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            resize: none;
+            min-height: 60px;
+            font-family: inherit;
+        }
+        .compose-input:focus { outline: none; }
+        .compose-input::placeholder { color: #71767b; }
         
-        .modal {
-            background: #12121a;
-            border: 1px solid #2a2a3a;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 380px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal-header {
-            padding: 16px;
-            border-bottom: 1px solid #2a2a3a;
+        .compose-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding-left: 56px;
         }
-        .modal-title { font-size: 16px; font-weight: 600; }
-        .modal-close {
+        .compose-tools {
+            display: flex;
+            gap: 16px;
+        }
+        .tool-btn {
             background: none;
             border: none;
-            color: #a0a0b0;
-            font-size: 24px;
+            color: #1d9bf0;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .post-btn {
+            background: #1d9bf0;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
         }
+        .post-btn:hover { background: #1a8cd8; }
+        .post-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         
-        .modal-body { padding: 16px; }
-        .form-group { margin-bottom: 14px; }
-        .form-label { display: block; font-size: 12px; color: #a0a0b0; margin-bottom: 5px; }
-        .form-select, .form-input {
+        /* Feed */
+        .feed { background: #000; }
+        .feed-item {
+            border-bottom: 1px solid #2a2a3a;
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            transition: background 0.2s;
+        }
+        .feed-item:hover { background: #080808; }
+        
+        .feed-content { flex: 1; min-width: 0; }
+        .feed-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+        .feed-author { font-weight: 700; }
+        .feed-handle { color: #71767b; }
+        .feed-time { color: #71767b; }
+        .feed-time::before { content: "· "; }
+        .verified-badge { color: #1d9bf0; font-size: 16px; }
+        
+        .feed-text {
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .feed-media {
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            border: 1px solid #2a2a3a;
+            max-height: 400px;
+        }
+        .feed-media img, .feed-media video {
             width: 100%;
-            background: #1a1a25;
+            max-height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .feed-meta {
+            display: flex;
+            gap: 24px;
+            color: #71767b;
+            font-size: 13px;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .meta-item:hover { color: #1d9bf0; }
+        .meta-item.verified { color: #00ff88; }
+        .meta-item.unverified { color: #ffaa00; }
+        
+        .location-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: #1d9bf0;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: #000;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        
+        .search-box {
+            background: #16181c;
+            border: 1px solid #2a2a3a;
+            border-radius: 24px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 15px;
+            flex: 1;
+        }
+        .search-box input:focus { outline: none; }
+        .search-box input::placeholder { color: #71767b; }
+        
+        /* Trending Card */
+        .card {
+            background: #16181c;
+            border: 1px solid #2a2a3a;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 16px;
+            font-size: 20px;
+            font-weight: 800;
+            border-bottom: 1px solid #2a2a3a;
+        }
+        .trend-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #2a2a3a;
+            cursor: pointer;
+        }
+        .trend-item:hover { background: #1e2028; }
+        .trend-category { font-size: 13px; color: #71767b; }
+        .trend-title { font-size: 15px; font-weight: 700; margin: 4px 0; }
+        .trend-count { font-size: 13px; color: #71767b; }
+        
+        /* Map */
+        #map {
+            height: 200px;
+            border-radius: 12px;
+            margin: 16px;
+            background: #16181c;
+        }
+        
+        /* Filters */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #2a2a3a;
+            overflow-x: auto;
+        }
+        .filter-btn {
+            background: #16181c;
+            border: 1px solid #2a2a3a;
+            color: #71767b;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .filter-btn.active {
+            background: #1d9bf0;
+            color: #fff;
+            border-color: #1d9bf0;
+        }
+        
+        /* Media Upload Preview */
+        .media-preview {
+            display: flex;
+            gap: 8px;
+            padding-left: 56px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .preview-item {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #2a2a3a;
+        }
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .preview-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Mobile */
+        @media (max-width: 900px) {
+            .main { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
+        
+        /* Leaflet custom */
+        .leaflet-container { background: #000; }
+        
+        /* Location Selector in Compose */
+        .location-select {
+            padding-left: 56px;
+            margin-bottom: 12px;
+        }
+        .location-select select {
+            background: #16181c;
             border: 1px solid #2a2a3a;
             color: #fff;
-            padding: 10px 12px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
             font-size: 14px;
         }
-        .form-select:focus, .form-input:focus {
-            outline: none;
-            border-color: #00d4ff;
-        }
-        
-        .submit-btn {
-            width: 100%;
-            background: #00d4ff;
-            color: #0a0a0f;
-            border: none;
-            padding: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .submit-btn:hover { background: #00e5ff; }
     </style>
 </head>
 <body>
@@ -214,174 +359,331 @@
         <header class="header">
             <div class="logo">
                 <span class="logo-icon">🛡️</span>
-                <span>Gulf Watch</span>
+                <span class="logo-text">Gulf Watch</span>
                 <span class="live-badge">LIVE</span>
             </div>
-            <select class="region-select" id="regionSelect">
-                <option value="dubai">Dubai</option>
-                <option value="abudhabi">Abu Dhabi</option>
-                <option value="bahrain">Bahrain</option>
-                <option value="doha">Qatar</option>
-            </select>
+            <nav class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTab('feed')">Feed</button>
+                <button class="nav-tab" onclick="switchTab('map')">Map</button>
+                <button class="nav-tab" onclick="switchTab('gov')">Gov</button>
+            </nav>
         </header>
         
         <main class="main">
-            <div id="map"></div>
+            <div class="feed-column">
+                <!-- Filters -->
+                <div class="filter-bar">
+                    <button class="filter-btn active" onclick="filterFeed('all')">All</button>
+                    <button class="filter-btn" onclick="filterFeed('explosion')">💥 Explosions</button>
+                    <button class="filter-btn" onclick="filterFeed('interceptor')">🚀 Interceptors</button>
+                    <button class="filter-btn" onclick="filterFeed('siren')">🚨 Sirens</button>
+                    <button class="filter-btn" onclick="filterFeed('verified')">✓ Verified</button>
+                </div>
+                
+                <!-- Compose -->
+                <div class="compose-box">
+                    <div class="compose-header">
+                        <div class="avatar">📡</div>
+                        <textarea class="compose-input" id="composeInput" placeholder="What did you see or hear?" rows="2"></textarea>
+                    </div>
+                    <div class="location-select">
+                        <select id="locationSelect">
+                            <option value="">📍 Select location...</option>
+                            <option value="Palm Jumeirah">Palm Jumeirah</option>
+                            <option value="Dubai Marina">Dubai Marina</option>
+                            <option value="Downtown Dubai">Downtown Dubai</option>
+                            <option value="Dubai Creek Harbour">Dubai Creek Harbour</option>
+                            <option value="Jebel Ali">Jebel Ali</option>
+                            <option value="Deira">Deira</option>
+                            <option value="Bur Dubai">Bur Dubai</option>
+                            <option value="Business Bay">Business Bay</option>
+                            <option value="Abu Dhabi">Abu Dhabi</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="media-preview" id="mediaPreview"></div>
+                    <div class="compose-actions">
+                        <div class="compose-tools">
+                            <button class="tool-btn" onclick="document.getElementById('mediaInput').click()">📷</button>
+                            <button class="tool-btn" onclick="document.getElementById('mediaInput').click()">🎥</button>
+                            <input type="file" id="mediaInput" accept="image/*,video/*" multiple style="display:none" onchange="handleMedia(event)">
+                        </div>
+                        <button class="post-btn" id="postBtn" onclick="submitPost()">Post</button>
+                    </div>
+                </div>
+                
+                <!-- Feed -->
+                <div class="feed" id="feed"></div>
+            </div>
+            
             <aside class="sidebar">
-                <button class="report-btn" onclick="openModal()">
-                    📡 Report
-                </button>
-                <div class="alerts-section">
-                    <div class="section-title">Active Alerts</div>
-                    <div id="alertsList"></div>
+                <div class="search-box">
+                    <span>🔍</span>
+                    <input type="text" placeholder="Search reports...">
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">Trending</div>
+                    <div class="trend-item">
+                        <div class="trend-category">Dubai · Trending</div>
+                        <div class="trend-title">#PalmJumeirah</div>
+                        <div class="trend-count">2,847 reports</div>
+                    </div>
+                    <div class="trend-item">
+                        <div class="trend-category">UAE · Trending</div>
+                        <div class="trend-title">#AirDefense</div>
+                        <div class="trend-count">1,923 reports</div>
+                    </div>
+                    <div class="trend-item">
+                        <div class="trend-category">Gulf · Trending</div>
+                        <div class="trend-title">#Explosion</div>
+                        <div class="trend-count">4,156 reports</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">Live Map</div>
+                    <div id="map"></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">Stats</div>
+                    <div class="trend-item">
+                        <div class="trend-category">Total Reports</div>
+                        <div class="trend-title">12,847</div>
+                    </div>
+                    <div class="trend-item">
+                        <div class="trend-category">Verified</div>
+                        <div class="trend-title" style="color: #00ff88;">3,291</div>
+                    </div>
+                    <div class="trend-item">
+                        <div class="trend-category">Active Cameras</div>
+                        <div class="trend-title" style="color: #1d9bf0;">0</div>
+                    </div>
                 </div>
             </aside>
         </main>
-        
-        <div class="stats-bar">
-            <div class="stat">📍 <span class="stat-value" id="reportCount">12</span> Reports</div>
-            <div class="stat">✓ <span class="stat-value">5</span> Confirmed</div>
-            <div class="stat">📷 <span class="stat-value">0</span> Cameras</div>
-        </div>
-    </div>
-    
-    <!-- Report Modal -->
-    <div class="modal-overlay" id="modal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Report Incident</div>
-                <button class="modal-close" onclick="closeModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <form id="reportForm">
-                    <div class="form-group">
-                        <label class="form-label">What did you see/hear?</label>
-                        <select class="form-select" name="type" required>
-                            <option value="">Select...</option>
-                            <option value="explosion">💥 Explosion</option>
-                            <option value="interceptor">🚀 Interceptor</option>
-                            <option value="siren">🚨 Siren</option>
-                            <option value="smoke">💨 Smoke/Fire</option>
-                            <option value="drone">🛸 Drone</option>
-                            <option value="aircraft">✈️ Aircraft</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Your Location</label>
-                        <select class="form-select" name="location" required>
-                            <option value="">Select area...</option>
-                            <option value="palm">Palm Jumeirah</option>
-                            <option value="marina">Dubai Marina</option>
-                            <option value="downtown">Downtown / Burj Khalifa</option>
-                            <option value="creek">Dubai Creek Harbour</option>
-                            <option value="jebelali">Jebel Ali</option>
-                            <option value="deira">Deira</option>
-                            <option value="burdubai">Bur Dubai</option>
-                            <option value="business">Business Bay</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Details</label>
-                        <input type="text" class="form-input" name="details" placeholder="Direction, distance, etc.">
-                    </div>
-                    <button type="submit" class="submit-btn">Submit</button>
-                </form>
-            </div>
-        </div>
     </div>
 
     <script>
-        // Region configs
-        const regions = {
-            dubai: { center: [25.2048, 55.2708], zoom: 11 },
-            abudhabi: { center: [24.4539, 54.3773], zoom: 11 },
-            bahrain: { center: [26.2285, 50.5860], zoom: 12 },
-            doha: { center: [25.2854, 51.5310], zoom: 12 }
-        };
+        // Initialize Leaflet map
+        const map = L.map('map', { zoomControl: false }).setView([25.2048, 55.2708], 10);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
         
-        // Initialize map with OpenStreetMap (no API key needed)
-        const map = L.map('map', {
-            zoomControl: false,
-            attributionControl: false
-        }).setView([25.2048, 55.2708], 11);
-        
-        // Dark theme tiles
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            maxZoom: 19
-        }).addTo(map);
-        
-        L.control.zoom({ position: 'bottomright' }).addTo(map);
-        
-        // Today's confirmed incidents
-        const incidents = [
-            { id: 1, type: 'explosion', title: 'Hotel Fire', lat: 25.1156, lng: 55.1284, desc: 'Fairmont Hotel, Palm Jumeirah — reported hit', time: '09:15', severity: 'confirmed' },
-            { id: 2, type: 'explosion', title: 'Explosion', lat: 25.1412, lng: 55.1853, desc: 'Near Burj Al Arab — drone debris', time: '09:08', severity: 'confirmed' },
-            { id: 3, type: 'explosion', title: 'Explosion', lat: 25.1972, lng: 55.2962, desc: 'Near Burj Khalifa — loud blast', time: '08:45', severity: 'confirmed' },
-            { id: 4, type: 'explosion', title: 'Port Fire', lat: 24.9857, lng: 55.0274, desc: 'Jebel Ali Port — berth fire', time: '09:24', severity: 'confirmed' },
-            { id: 5, type: 'interceptor', title: 'Air Defense', lat: 25.25, lng: 55.30, desc: 'Interceptor launches over city', time: '09:10', severity: 'interceptor' },
-            { id: 6, type: 'explosion', title: 'Explosion', lat: 25.2048, lng: 55.27, desc: 'Creek Harbour area — loud blast heard', time: '09:28', severity: 'confirmed' }
+        // Sample posts (initial data)
+        let posts = [
+            {
+                id: 1,
+                author: 'Ahmed @ Creek',
+                handle: '@ahmed_dxb',
+                verified: true,
+                time: '2m',
+                text: 'Loud explosion heard from Creek Harbour direction. Saw smoke rising.',
+                location: 'Dubai Creek Harbour',
+                type: 'explosion',
+                verified: true,
+                likes: 234,
+                replies: 45,
+                shares: 89
+            },
+            {
+                id: 2,
+                author: 'Dubai Eye',
+                handle: '@dubai_eye_1',
+                verified: false,
+                time: '5m',
+                text: '🚨 Air defense interceptors launched over Palm area. Multiple booms.',
+                location: 'Palm Jumeirah',
+                type: 'interceptor',
+                verified: true,
+                likes: 1.2,
+                replies: 156,
+                shares: 432
+            },
+            {
+                id: 3,
+                author: 'Sarah M',
+                handle: '@sarah_in_dxb',
+                verified: false,
+                time: '8m',
+                text: 'Sirens going off in Downtown. Everyone heading to shelters.',
+                location: 'Downtown Dubai',
+                type: 'siren',
+                verified: false,
+                likes: 89,
+                replies: 23,
+                shares: 45
+            },
+            {
+                id: 4,
+                author: 'Civil Defense UAE',
+                handle: '@DubaiCivilDef',
+                verified: true,
+                time: '12m',
+                text: 'Official: Interceptor systems activated. Stay indoors, away from windows. Follow official channels only.',
+                location: 'Dubai',
+                type: 'interceptor',
+                verified: true,
+                likes: 5.6,
+                replies: 892,
+                shares: 12.3
+            },
+            {
+                id: 5,
+                author: 'Marina Resident',
+                handle: '@marina_life',
+                verified: false,
+                time: '15m',
+                text: 'Video: Debris falling near Marina Walk. Stay clear of the area.',
+                location: 'Dubai Marina',
+                type: 'explosion',
+                verified: false,
+                likes: 456,
+                replies: 67,
+                shares: 234
+            }
         ];
         
-        // Add markers
-        incidents.forEach(i => {
-            const iconClass = i.severity === 'interceptor' ? 'marker-interceptor' : 'marker-confirmed';
-            const color = i.severity === 'interceptor' ? '#00ff88' : '#ff4444';
-            
-            const customIcon = L.divIcon({
-                className: 'custom-marker',
-                html: `<div class="${iconClass}"></div>`,
-                iconSize: [16, 16],
-                iconAnchor: [8, 8]
-            });
-            
-            L.marker([i.lat, i.lng], { icon: customIcon })
-                .addTo(map)
-                .bindPopup(`<b>${i.title}</b><br>${i.desc}<br><small>${i.time}</small>`);
-        });
+        let currentFilter = 'all';
+        let uploadedMedia = [];
         
-        // Region switcher
-        document.getElementById('regionSelect').addEventListener('change', (e) => {
-            const r = regions[e.target.value];
-            if (r) map.setView(r.center, r.zoom);
-        });
-        
-        // Render alerts
-        function renderAlerts() {
-            const list = document.getElementById('alertsList');
-            list.innerHTML = incidents.slice().reverse().map(i => `
-                <div class="alert-item ${i.severity}">
-                    <div class="alert-time">${i.time} — ${i.severity === 'confirmed' ? 'Confirmed' : 'Interceptor'}</div>
-                    <div class="alert-title">${i.title}</div>
-                    <div class="alert-desc">${i.desc}</div>
+        // Render feed
+        function renderFeed() {
+            const feed = document.getElementById('feed');
+            const filtered = currentFilter === 'all' 
+                ? posts 
+                : currentFilter === 'verified' 
+                    ? posts.filter(p => p.verified)
+                    : posts.filter(p => p.type === currentFilter);
+            
+            feed.innerHTML = filtered.map(post => `
+                <div class="feed-item" data-type="${post.type}">
+                    <div class="avatar">${post.author[0]}</div>
+                    <div class="feed-content">
+                        <div class="feed-header">
+                            <span class="feed-author">${post.author}</span>
+                            ${post.verified ? '<span class="verified-badge">✓</span>' : ''}
+                            <span class="feed-handle">${post.handle}</span>
+                            <span class="feed-time">${post.time}</span>
+                        </div>
+                        <div class="feed-text">${post.text}</div>
+                        ${post.media ? `<div class="feed-media">${post.media}</div>` : ''}
+                        <div class="location-tag">📍 ${post.location}</div>
+                        <div class="feed-meta">
+                            <span class="meta-item">💬 ${formatNumber(post.replies)}</span>
+                            <span class="meta-item">🔄 ${formatNumber(post.shares)}</span>
+                            <span class="meta-item">❤️ ${formatNumber(post.likes)}</span>
+                            <span class="meta-item ${post.verified ? 'verified' : 'unverified'}">
+                                ${post.verified ? '✓ Verified' : '⏳ Pending'}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             `).join('');
         }
-        renderAlerts();
         
-        // Modal
-        function openModal() { document.getElementById('modal').classList.add('active'); }
-        function closeModal() { document.getElementById('modal').classList.remove('active'); }
+        function formatNumber(n) {
+            if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+            return n;
+        }
         
-        // Form
-        document.getElementById('reportForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const reports = JSON.parse(localStorage.getItem('reports') || '[]');
-            reports.push({
-                type: form.type.value,
-                location: form.location.value,
-                details: form.details.value,
-                time: new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'})
-            });
-            localStorage.setItem('reports', JSON.stringify(reports));
-            document.getElementById('reportCount').textContent = 12 + reports.length;
-            closeModal();
-            form.reset();
-        });
+        // Filter feed
+        function filterFeed(type) {
+            currentFilter = type;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderFeed();
+        }
         
-        document.getElementById('modal').addEventListener('click', (e) => {
-            if (e.target.id === 'modal') closeModal();
+        // Media upload
+        function handleMedia(e) {
+            const files = Array.from(e.target.files);
+            uploadedMedia = files;
+            
+            const preview = document.getElementById('mediaPreview');
+            preview.innerHTML = files.map((file, i) => {
+                const url = URL.createObjectURL(file);
+                return `
+                    <div class="preview-item">
+                        <img src="${url}" alt="">
+                        <button class="preview-remove" onclick="removeMedia(${i})">×</button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function removeMedia(index) {
+            uploadedMedia.splice(index, 1);
+            handleMedia({ target: { files: uploadedMedia } });
+        }
+        
+        // Submit post
+        function submitPost() {
+            const text = document.getElementById('composeInput').value;
+            const location = document.getElementById('locationSelect').value;
+            
+            if (!text.trim()) return;
+            
+            const newPost = {
+                id: Date.now(),
+                author: 'You',
+                handle: '@anonymous',
+                verified: false,
+                time: 'now',
+                text: text,
+                location: location || 'Unknown location',
+                type: detectType(text),
+                likes: 0,
+                replies: 0,
+                shares: 0
+            };
+            
+            posts.unshift(newPost);
+            renderFeed();
+            
+            // Reset
+            document.getElementById('composeInput').value = '';
+            document.getElementById('locationSelect').value = '';
+            document.getElementById('mediaPreview').innerHTML = '';
+            uploadedMedia = [];
+        }
+        
+        function detectType(text) {
+            const lower = text.toLowerCase();
+            if (lower.includes('explosion') || lower.includes('boom') || lower.includes('blast')) return 'explosion';
+            if (lower.includes('interceptor') || lower.includes('defense') || lower.includes('launch')) return 'interceptor';
+            if (lower.includes('siren')) return 'siren';
+            if (lower.includes('drone') || lower.includes('uav')) return 'drone';
+            return 'other';
+        }
+        
+        // Switch tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            // In real app, this would switch views
+        }
+        
+        // Initial render
+        renderFeed();
+        
+        // Add markers to map
+        const markers = [
+            { lat: 25.1156, lng: 55.1284, title: 'Palm Jumeirah' },
+            { lat: 25.2048, lng: 55.2708, title: 'Downtown' },
+            { lat: 25.0765, lng: 55.1404, title: 'Marina' },
+            { lat: 25.2571, lng: 55.2957, title: 'Creek Harbour' },
+            { lat: 24.9857, lng: 55.0274, title: 'Jebel Ali' }
+        ];
+        
+        markers.forEach(m => {
+            L.circleMarker([m.lat, m.lng], {
+                radius: 8,
+                fillColor: '#ff4444',
+                color: '#fff',
+                weight: 2,
+                fillOpacity: 0.8
+            }).addTo(map).bindPopup(m.title);
         });
     </script>
 </body>
