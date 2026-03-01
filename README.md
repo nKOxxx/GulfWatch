@@ -39,41 +39,41 @@ A real-time situational awareness system that aggregates, verifies, and distribu
 These verified government accounts are treated as **authoritative sources** requiring no cross-verification:
 
 ### Federal Government
-| Account | Platform | Type |
-|---------|----------|------|
-| [@uaegov](https://twitter.com/uaegov) | Twitter/X | Federal Government |
-| [@WAMnews](https://twitter.com/WAMnews) | Twitter/X | State Media |
-| [@moiuae](https://twitter.com/moiuae) | Twitter/X | Ministry of Interior |
-| [@uae_cd](https://twitter.com/uae_cd) | Twitter/X | Civil Defense |
-| [@ncema_uae](https://twitter.com/ncema_uae) | Twitter/X | Emergency Management |
+| Account | Twitter/X | Instagram | Type |
+|---------|-----------|-----------|------|
+| UAE Government | [@uaegov](https://twitter.com/uaegov) | [@uaegov](https://instagram.com/uaegov) | Federal Government |
+| WAM News Agency | [@WAMnews](https://twitter.com/WAMnews) | [@wam_news](https://instagram.com/wam_news) | State Media |
+| Ministry of Interior | [@moiuae](https://twitter.com/moiuae) | — | Security |
+| UAE Civil Defense | [@uae_cd](https://twitter.com/uae_cd) | — | Civil Defense |
+| NCEMA | [@ncema_uae](https://twitter.com/ncema_uae) | — | Emergency Management |
 
 ### Rulers
-| Account | Platform | Type |
-|---------|----------|------|
-| [@mohamedbinzayed](https://twitter.com/mohamedbinzayed) | Twitter/X | President of UAE |
-| [@hhshkmohd](https://twitter.com/hhshkmohd) | Twitter/X | Dubai Ruler |
-| [@sultanalqasimi](https://twitter.com/sultanalqasimi) | Twitter/X | Sharjah Ruler |
+| Account | Twitter/X | Instagram | Type |
+|---------|-----------|-----------|------|
+| HH Sheikh Mohamed bin Zayed | [@mohamedbinzayed](https://twitter.com/mohamedbinzayed) | [@mohamedbinzayed](https://instagram.com/mohamedbinzayed) | President of UAE |
+| HH Sheikh Mohammed bin Rashid | [@hhshkmohd](https://twitter.com/hhshkmohd) | [@hhshkmohd](https://instagram.com/hhshkmohd) | Dubai Ruler |
+| HH Sheikh Dr. Sultan Al Qasimi | [@sultanalqasimi](https://twitter.com/sultanalqasimi) | — | Sharjah Ruler |
 
 ### Dubai
-| Account | Platform | Type |
-|---------|----------|------|
-| [@dubaipolicehq](https://twitter.com/dubaipolicehq) | Twitter/X | Police |
-| [@dubai_civildef](https://twitter.com/dubai_civildef) | Twitter/X | Civil Defense |
-| [@dxbmediaoffice](https://twitter.com/dxbmediaoffice) | Twitter/X | Media Office |
+| Account | Twitter/X | Instagram | Type |
+|---------|-----------|-----------|------|
+| Dubai Police | [@dubaipolicehq](https://twitter.com/dubaipolicehq) | — | Police |
+| Dubai Civil Defense | [@dubai_civildef](https://twitter.com/dubai_civildef) | — | Civil Defense |
+| Dubai Media Office | [@dxbmediaoffice](https://twitter.com/dxbmediaoffice) | — | Media Office |
 
 ### Abu Dhabi
-| Account | Platform | Type |
-|---------|----------|------|
-| [@ad_policehq](https://twitter.com/ad_policehq) | Twitter/X | Police |
-| [@abudhabi_gov](https://twitter.com/abudhabi_gov) | Twitter/X | Government |
-| [@admediaoffice](https://twitter.com/admediaoffice) | Twitter/X | Media Office |
+| Account | Twitter/X | Instagram | Type |
+|---------|-----------|-----------|------|
+| Abu Dhabi Police | [@ad_policehq](https://twitter.com/ad_policehq) | — | Police |
+| Abu Dhabi Government | [@abudhabi_gov](https://twitter.com/abudhabi_gov) | — | Government |
+| Abu Dhabi Media Office | [@admediaoffice](https://twitter.com/admediaoffice) | — | Media Office |
 
 ### Verified Media (Require 2+ sources)
-| Account | Platform | Type |
-|---------|----------|------|
-| [@gulf_news](https://twitter.com/gulf_news) | Twitter/X | Media |
-| [@thenationaluae](https://twitter.com/thenationaluae) | Twitter/X | Media |
-| [@khaleejtimes](https://twitter.com/khaleejtimes) | Twitter/X | Media |
+| Account | Twitter/X | Instagram | Type |
+|---------|-----------|-----------|------|
+| Gulf News | [@gulf_news](https://twitter.com/gulf_news) | [@gulf_news](https://instagram.com/gulf_news) | Media |
+| The National | [@thenationaluae](https://twitter.com/thenationaluae) | [@thenationaluae](https://instagram.com/thenationaluae) | Media |
+| Khaleej Times | [@khaleejtimes](https://twitter.com/khaleejtimes) | [@khaleejtimes](https://instagram.com/khaleejtimes) | Media |
 
 **[Full list in official-sources.yaml →](config/official-sources.yaml)**
 
