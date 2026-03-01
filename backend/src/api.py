@@ -33,8 +33,9 @@ service = IngestionService()
 
 # Load demo data for testing
 def load_demo_data():
-    """Load demo reports for testing"""
+    """Load demo reports for testing across all regions"""
     demo_reports = [
+        # UAE - Dubai
         Report(
             id="r1",
             source_type="twitter",
@@ -73,53 +74,195 @@ def load_demo_data():
             follower_count=1200,
             is_verified=False
         ),
+        # UAE - Abu Dhabi
         Report(
-            id="r4",
+            id="r8",
             source_type="twitter",
-            source_id="dubai_eye",
-            content="Air defense interceptors launched over Palm area. Multiple booms heard.",
+            source_id="WAMews",
+            content="Air defense systems intercept hostile targets over Abu Dhabi. All residents advised to remain indoors.",
             created_at=datetime.now(),
-            location_name="Palm Jumeirah",
-            location_lat=25.1156,
-            location_lng=55.1284,
-            follower_count=450000,
+            location_name="Abu Dhabi",
+            location_lat=24.4539,
+            location_lng=54.3773,
+            follower_count=2000000,
+            is_verified=True,
+            is_media=True
+        ),
+        # Bahrain
+        Report(
+            id="r9",
+            source_type="twitter",
+            source_id="bahrain_news",
+            content="Explosion heard in Manama. Cause under investigation. Emergency services responding.",
+            created_at=datetime.now(),
+            location_name="Manama",
+            location_lat=26.2285,
+            location_lng=50.5860,
+            follower_count=500000,
+            is_verified=True,
+            is_media=True
+        ),
+        # Qatar
+        Report(
+            id="r10",
+            source_type="twitter",
+            source_id="doha_observer",
+            content="Air raid sirens tested in Doha. This is a drill. No cause for concern.",
+            created_at=datetime.now(),
+            location_name="Doha",
+            location_lat=25.2854,
+            location_lng=51.5310,
+            follower_count=300000,
+            is_verified=True,
+            is_media=True
+        ),
+        # Saudi Arabia
+        Report(
+            id="r11",
+            source_type="twitter",
+            source_id="saudi_news",
+            content="Missile intercepted over Riyadh. Debris fell in uninhabited area. No casualties reported.",
+            created_at=datetime.now(),
+            location_name="Riyadh",
+            location_lat=24.7136,
+            location_lng=46.6753,
+            follower_count=5000000,
             is_verified=True,
             is_media=True
         ),
         Report(
-            id="r5",
-            source_type="user",
-            source_id="anonymous",
-            content="Sirens going off in Downtown. Everyone heading to parking shelters.",
+            id="r12",
+            source_type="twitter",
+            source_id="jeddah_eye",
+            content="Loud explosion heard near Jeddah port. Authorities investigating.",
             created_at=datetime.now(),
-            location_name="Downtown Dubai",
-            location_lat=25.1972,
-            location_lng=55.2962,
-            follower_count=0,
-            is_verified=False
+            location_name="Jeddah",
+            location_lat=21.4858,
+            location_lng=39.1925,
+            follower_count=150000,
+            is_verified=False,
+            is_media=True
+        ),
+        # Israel
+        Report(
+            id="r13",
+            source_type="twitter",
+            source_id="idf",
+            content="Iron Dome intercepts multiple rockets over Tel Aviv area. Stay near shelters.",
+            created_at=datetime.now(),
+            location_name="Tel Aviv",
+            location_lat=32.0853,
+            location_lng=34.7818,
+            follower_count=2000000,
+            is_verified=True,
+            is_media=True
         ),
         Report(
-            id="r6",
+            id="r14",
             source_type="twitter",
-            source_id="witness_marina",
-            content="Debris falling near Marina Walk. Stay clear of the area.",
+            source_id="jerusalem_post",
+            content="Sirens in Jerusalem. Explosions heard. Iron Dome active.",
             created_at=datetime.now(),
-            location_name="Dubai Marina",
-            location_lat=25.0765,
-            location_lng=55.1404,
-            follower_count=800,
-            is_verified=False
+            location_name="Jerusalem",
+            location_lat=31.7683,
+            location_lng=35.2137,
+            follower_count=800000,
+            is_verified=True,
+            is_media=True
         ),
         Report(
-            id="r7",
+            id="r15",
             source_type="twitter",
-            source_id="gulf_news",
-            content="Jebel Ali Port reports fire at one of the berths. Fire crews on scene.",
+            source_id="haifa_alerts",
+            content="Multiple interceptor launches visible from Haifa. Loud booms reported.",
             created_at=datetime.now(),
-            location_name="Jebel Ali",
-            location_lat=24.9857,
-            location_lng=55.0274,
-            follower_count=1800000,
+            location_name="Haifa",
+            location_lat=32.7940,
+            location_lng=34.9896,
+            follower_count=200000,
+            is_verified=True,
+            is_media=True
+        ),
+        # Iran
+        Report(
+            id="r16",
+            source_type="twitter",
+            source_id="tehran_journal",
+            content="Explosions reported in Tehran. Location unknown at this time.",
+            created_at=datetime.now(),
+            location_name="Tehran",
+            location_lat=35.6892,
+            location_lng=51.3890,
+            follower_count=400000,
+            is_verified=False,
+            is_media=True
+        ),
+        Report(
+            id="r17",
+            source_type="twitter",
+            source_id="isfahan_news",
+            content="Military facility near Isfahan. All normal operations.",
+            created_at=datetime.now(),
+            location_name="Isfahan",
+            location_lat=32.6539,
+            location_lng=51.6660,
+            follower_count=100000,
+            is_verified=True,
+            is_media=True
+        ),
+        # Lebanon
+        Report(
+            id="r18",
+            source_type="twitter",
+            source_id="beirut_reports",
+            content="Explosion in Beirut southern suburbs. Ambulances responding.",
+            created_at=datetime.now(),
+            location_name="Beirut",
+            location_lat=33.8938,
+            location_lng=35.5018,
+            follower_count=600000,
+            is_verified=False,
+            is_media=True
+        ),
+        # Jordan
+        Report(
+            id="r19",
+            source_type="twitter",
+            source_id="amman_alerts",
+            content="Air defense activity near Aqaba. Debris from interceptions may fall in area.",
+            created_at=datetime.now(),
+            location_name="Aqaba",
+            location_lat=29.5267,
+            location_lng=35.0078,
+            follower_count=150000,
+            is_verified=True,
+            is_media=True
+        ),
+        # Kuwait
+        Report(
+            id="r20",
+            source_type="twitter",
+            source_id="kuwait_moi",
+            content="No threats to Kuwait airspace. All systems normal.",
+            created_at=datetime.now(),
+            location_name="Kuwait City",
+            location_lat=29.3759,
+            location_lng=47.9774,
+            follower_count=800000,
+            is_verified=True,
+            is_media=True
+        ),
+        # Oman
+        Report(
+            id="r21",
+            source_type="twitter",
+            source_id="muscat_daily",
+            content="Flight diversions due to regional airspace closure. Muscat airport operating normally.",
+            created_at=datetime.now(),
+            location_name="Muscat",
+            location_lat=23.5859,
+            location_lng=58.4059,
+            follower_count=200000,
             is_verified=True,
             is_media=True
         ),

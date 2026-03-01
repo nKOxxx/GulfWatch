@@ -184,11 +184,50 @@ class IngestionService:
     """Main service coordinating all ingestions"""
     
     KEYWORDS = [
-        'dubai', 'abudhabi', 'uae', 'bahrain', 'qatar', 'doha',
-        'explosion', 'blast', 'attack', 'missile', 'drone', 'strike',
-        'siren', 'alert', 'interceptor', 'air defense',
-        'palm', 'jumeirah', 'marina', 'downtown', 'burj khalifa',
-        'iran', 'israel', 'war'
+        # UAE
+        'dubai', 'abudhabi', 'auh', 'dxb', 'uae', 'sharjah', 'ajman', 'rak', 'fujairah',
+        'palm', 'jumeirah', 'marina', 'downtown', 'burj khalifa', 'creek harbour',
+        'jebel ali', 'deira', 'bur dubai', 'al ain',
+        
+        # Bahrain
+        'bahrain', 'manama', 'muharraq', 'riffa',
+        
+        # Qatar
+        'qatar', 'doha', 'al wakrah', 'lusail',
+        
+        # Saudi Arabia
+        'saudi', 'saudi arabia', 'riyadh', 'jeddah', 'mecca', 'makkah', 'medina', 'madinah',
+        'dhahran', 'khobar', 'dammam', 'taif', 'tabuk', 'abha',
+        
+        # Israel
+        'israel', 'tel aviv', 'jerusalem', 'haifa', 'eilat', 'ashdod', 'ashkelon',
+        'beersheba', 'netanya', 'jaffa', 'yafo',
+        
+        # Iran
+        'iran', 'tehran', 'isfahan', 'shiraz', 'mashhad', 'tabriz', 'bandar abbas',
+        'bushehr', 'ahvaz',
+        
+        # Lebanon
+        'lebanon', 'beirut', 'tripoli', 'sidon', 'tyre', 'baalbek',
+        
+        # Jordan
+        'jordan', 'amman', 'aqaba', 'irbid',
+        
+        # Kuwait
+        'kuwait', 'kuwait city', 'ahmadi',
+        
+        # Oman
+        'oman', 'muscat', 'salalah', 'sohar',
+        
+        # Threats
+        'explosion', 'blast', 'attack', 'missile', 'rocket', 'drone', 'uav', 'strike',
+        'siren', 'alert', 'interceptor', 'air defense', 'patriot', 'iron dome',
+        'smoke', 'fire', 'bombing', 'hit', 'struck',
+        'war', 'conflict', 'retaliation', 'escalation',
+        
+        # Arabic
+        'انفجار', 'صاروخ', 'طائرة', 'مسيرة', 'إنذار', 'دبي', 'أبوظبي',
+        'إيران', 'إسرائيل', 'حرب', 'تفجير'
     ]
     
     def __init__(self):

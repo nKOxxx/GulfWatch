@@ -131,21 +131,99 @@ class KeywordTracker:
 class LocationExtractor:
     """Extract location mentions from text"""
     
+    # UAE Locations
     LOCATION_PATTERNS = {
+        # Dubai
         'Palm Jumeirah': ['palm', 'palm jumeirah', 'jumeirah', 'fairmont'],
         'Dubai Marina': ['marina', 'dubai marina', 'jbr', 'jumeirah beach'],
-        'Downtown Dubai': ['downtown', 'burj khalifa', 'dubai mall', 'business bay'],
-        'Dubai Creek Harbour': ['creek', 'creek harbour', 'creek harbor'],
-        'Deira': ['deira', 'gold souk', 'naif'],
+        'Downtown Dubai': ['downtown dubai', 'burj khalifa', 'dubai mall', 'business bay'],
+        'Dubai Creek Harbour': ['creek', 'creek harbour', 'creek harbor', 'dubai creek'],
+        'Deira': ['deira', 'gold souk', 'naif', 'al ras'],
         'Bur Dubai': ['bur dubai', 'al fahidi', 'karama'],
         'Jebel Ali': ['jebel ali', 'jafza', 'jebel ali port'],
-        'Abu Dhabi': ['abu dhabi', 'corniche', 'yas island'],
+        'Al Quoz': ['al quoz'],
+        'Jumeirah': ['jumeirah', 'umm suqeim'],
+        
+        # Abu Dhabi
+        'Abu Dhabi': ['abu dhabi', 'corniche', 'yas island', 'saadiyat'],
+        'Al Ain': ['al ain', 'buraimi'],
+        
+        # Other UAE
         'Sharjah': ['sharjah', 'al nahda'],
-        'Al Ain': ['al ain'],
-        'Fujairah': ['fujairah'],
+        'Ajman': ['ajman'],
+        'Ras Al Khaimah': ['ras al khaimah', 'rak'],
+        'Fujairah': ['fujairah', 'khorfakkan'],
+        'Umm Al Quwain': ['umm al quwain'],
+        
+        # Bahrain
+        'Manama': ['manama', 'bahrain capital', 'juffair'],
+        'Riffa': ['riffa'],
+        'Muharraq': ['muharraq'],
+        'Hamad Town': ['hamad town'],
+        
+        # Qatar
+        'Doha': ['doha', 'west bay', 'the pearl', 'lusail'],
+        'Al Wakrah': ['al wakrah'],
+        'Al Khor': ['al khor'],
+        
+        # Saudi Arabia
+        'Riyadh': ['riyadh', 'king fahd road'],
+        'Jeddah': ['jeddah', 'king abdullah'],
+        'Mecca': ['mecca', 'makkah'],
+        'Medina': ['medina', 'madinah'],
+        'Dhahran': ['dhahran'],
+        'Khobar': ['khobar', 'al khobar'],
+        'Dammam': ['dammam'],
+        'Taif': ['taif'],
+        'Tabuk': ['tabuk'],
+        'Abha': ['abha'],
+        
+        # Israel
+        'Tel Aviv': ['tel aviv', 'yafo', 'jaffa', 'ramat gan'],
+        'Jerusalem': ['jerusalem', 'al quds', 'old city'],
+        'Haifa': ['haifa'],
+        'Eilat': ['eilat'],
+        'Ashdod': ['ashdod'],
+        'Ashkelon': ['ashkelon'],
+        'Beersheba': ['beersheba', 'beer sheva'],
+        'Netanya': ['netanya'],
+        'Rishon LeZion': ['rishon'],
+        'Petah Tikva': ['petah tikva'],
+        
+        # Iran
+        'Tehran': ['tehran'],
+        'Isfahan': ['isfahan'],
+        'Shiraz': ['shiraz'],
+        'Mashhad': ['mashhad'],
+        'Tabriz': ['tabriz iran'],
+        'Bandar Abbas': ['bandar abbas'],
+        'Bushehr': ['bushehr'],
+        'Ahvaz': ['ahvaz'],
+        
+        # Lebanon
+        'Beirut': ['beirut'],
+        'Tripoli': ['tripoli lebanon'],
+        'Sidon': ['sidon'],
+        'Tyre': ['tyre lebanon'],
+        'Baalbek': ['baalbek'],
+        
+        # Jordan
+        'Amman': ['amman'],
+        'Aqaba': ['aqaba'],
+        'Irbid': ['irbid'],
+        
+        # Kuwait
+        'Kuwait City': ['kuwait city', 'kuwait'],
+        'Ahmadi': ['ahmadi'],
+        
+        # Oman
+        'Muscat': ['muscat'],
+        'Salalah': ['salalah'],
+        'Sohar': ['sohar'],
     }
     
     COORDINATES = {
+        # UAE
         'Palm Jumeirah': (25.1156, 55.1284),
         'Dubai Marina': (25.0765, 55.1404),
         'Downtown Dubai': (25.1972, 55.2962),
@@ -153,10 +231,81 @@ class LocationExtractor:
         'Deira': (25.2708, 55.2962),
         'Bur Dubai': (25.2571, 55.2957),
         'Jebel Ali': (24.9857, 55.0274),
+        'Al Quoz': (25.2520, 55.2948),
+        'Jumeirah': (25.2048, 55.2708),
         'Abu Dhabi': (24.4539, 54.3773),
-        'Sharjah': (25.3573, 55.4033),
         'Al Ain': (24.1302, 55.8023),
+        'Sharjah': (25.3573, 55.4033),
+        'Ajman': (25.4052, 55.5136),
+        'Ras Al Khaimah': (25.7895, 55.9432),
         'Fujairah': (25.1288, 56.3265),
+        'Umm Al Quwain': (25.5647, 55.5552),
+        
+        # Bahrain
+        'Manama': (26.2285, 50.5860),
+        'Riffa': (26.1320, 50.5550),
+        'Muharraq': (26.2575, 50.6119),
+        'Hamad Town': (26.1125, 50.5130),
+        
+        # Qatar
+        'Doha': (25.2854, 51.5310),
+        'Al Wakrah': (25.1659, 51.5976),
+        'Al Khor': (25.6804, 51.4969),
+        
+        # Saudi
+        'Riyadh': (24.7136, 46.6753),
+        'Jeddah': (21.4858, 39.1925),
+        'Mecca': (21.3891, 39.8579),
+        'Medina': (24.5247, 39.5692),
+        'Dhahran': (26.2361, 50.0393),
+        'Khobar': (26.2172, 50.1971),
+        'Dammam': (26.3927, 50.0916),
+        'Taif': (21.2854, 40.4262),
+        'Tabuk': (28.3835, 36.5662),
+        'Abha': (18.2164, 42.5053),
+        
+        # Israel
+        'Tel Aviv': (32.0853, 34.7818),
+        'Jerusalem': (31.7683, 35.2137),
+        'Haifa': (32.7940, 34.9896),
+        'Eilat': (29.5581, 34.9482),
+        'Ashdod': (31.8044, 34.6553),
+        'Ashkelon': (31.6695, 34.5715),
+        'Beersheba': (31.2520, 34.7915),
+        'Netanya': (32.3329, 34.8599),
+        'Rishon LeZion': (31.9730, 34.7925),
+        'Petah Tikva': (32.0871, 34.8878),
+        
+        # Iran
+        'Tehran': (35.6892, 51.3890),
+        'Isfahan': (32.6539, 51.6660),
+        'Shiraz': (29.5926, 52.5836),
+        'Mashhad': (36.2605, 59.6168),
+        'Tabriz': (38.0962, 46.2738),
+        'Bandar Abbas': (27.1833, 56.2666),
+        'Bushehr': (28.9214, 50.8207),
+        'Ahvaz': (31.3183, 48.6706),
+        
+        # Lebanon
+        'Beirut': (33.8938, 35.5018),
+        'Tripoli': (34.4333, 35.8333),
+        'Sidon': (33.5606, 35.3759),
+        'Tyre': (33.2700, 35.2033),
+        'Baalbek': (34.0047, 36.2110),
+        
+        # Jordan
+        'Amman': (31.9454, 35.9284),
+        'Aqaba': (29.5267, 35.0078),
+        'Irbid': (32.5568, 35.8469),
+        
+        # Kuwait
+        'Kuwait City': (29.3759, 47.9774),
+        'Ahmadi': (29.0769, 48.0839),
+        
+        # Oman
+        'Muscat': (23.5859, 58.4059),
+        'Salalah': (17.0197, 54.0897),
+        'Sohar': (24.3420, 56.7299),
     }
     
     def extract(self, text: str) -> Optional[Tuple[str, float, float]]:

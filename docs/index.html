@@ -215,7 +215,19 @@
         </header>
         
         <div class="status">
-            <span>📍 <span class="value" id="locationName">Dubai</span></span>
+            <select id="regionSelect" onchange="changeRegion()" style="background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 13px;">
+                <option value="dubai">🇦🇪 Dubai, UAE</option>
+                <option value="abudhabi">🇦🇪 Abu Dhabi, UAE</option>
+                <option value="bahrain">🇧🇭 Bahrain</option>
+                <option value="qatar">🇶🇦 Qatar</option>
+                <option value="saudi">🇸🇦 Saudi Arabia</option>
+                <option value="israel">🇮🇱 Israel</option>
+                <option value="iran">🇮🇷 Iran</option>
+                <option value="lebanon">🇱🇧 Lebanon</option>
+                <option value="jordan">🇯🇴 Jordan</option>
+                <option value="kuwait">🇰🇼 Kuwait</option>
+                <option value="oman">🇴🇲 Oman</option>
+            </select>
             <span>🚨 <span class="value" id="alertCount">-</span> alerts</span>
         </div>
         
@@ -269,9 +281,34 @@
     <script>
         const API_URL = 'http://localhost:3001'; // Change to your API URL
         
+        // Region coordinates
+        const REGIONS = {
+            dubai: { lat: 25.2048, lng: 55.2708, name: 'Dubai, UAE' },
+            abudhabi: { lat: 24.4539, lng: 54.3773, name: 'Abu Dhabi, UAE' },
+            bahrain: { lat: 26.2285, lng: 50.5860, name: 'Bahrain' },
+            qatar: { lat: 25.2854, lng: 51.5310, name: 'Qatar' },
+            saudi: { lat: 24.7136, lng: 46.6753, name: 'Saudi Arabia' },
+            israel: { lat: 32.0853, lng: 34.7818, name: 'Israel' },
+            iran: { lat: 35.6892, lng: 51.3890, name: 'Iran' },
+            lebanon: { lat: 33.8938, lng: 35.5018, name: 'Lebanon' },
+            jordan: { lat: 31.9454, lng: 35.9284, name: 'Jordan' },
+            kuwait: { lat: 29.3759, lng: 47.9774, name: 'Kuwait' },
+            oman: { lat: 23.5859, lng: 58.4059, name: 'Oman' }
+        };
+        
         // User location (default to Dubai)
         let userLat = 25.2048;
         let userLng = 55.2708;
+        let currentRegion = 'dubai';
+        
+        function changeRegion() {
+            const select = document.getElementById('regionSelect');
+            currentRegion = select.value;
+            const region = REGIONS[currentRegion];
+            userLat = region.lat;
+            userLng = region.lng;
+            loadEvents();
+        }
         
         // Get user location
         if (navigator.geolocation) {
