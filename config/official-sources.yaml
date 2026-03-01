@@ -149,10 +149,18 @@ sources:
     
   - name: "Abu Dhabi Police"
     platform: "twitter"
-    handle: " "@ad_policehq"
+    handle: "@ad_policehq"
     type: "police"
     credibility: 100
     priority: "immediate"
+    
+  - name: "Ministry of Interior - Abu Dhabi"
+    platform: "twitter"
+    handle: "@moiuae"
+    type: "security"
+    credibility: 100
+    priority: "immediate"
+    note: "Federal ministry, Abu Dhabi headquarters"
     
   - name: "Abu Dhabi Civil Defense"
     platform: "twitter"
