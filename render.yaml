@@ -1,61 +1,16 @@
 services:
   - type: web
     name: gulf-watch-api
-    runtime: node
-    region: frankfurt  # Closest to Dubai with Render
-    plan: starter
-    buildCommand: cd backend && npm install && npm run build
-    startCommand: cd backend && npm start
+    runtime: python
+    plan: standard
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && python -m uvicorn src.api:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 3001
-      - key: DB_HOST
-        fromDatabase:
-          name: gulf-watch-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: gulf-watch-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: gulf-watch-db
-          property: database
-      - key: DB_USER
-        fromDatabase:
-          name: gulf-watch-db
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: gulf-watch-db
-          property: password
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: gulf-watch-redis
-          property: connectionString
-      - key: FRONTEND_URL
-        value: https://gulf-watch-web.onrender.com
-    healthCheckPath: /health
-
-  - type: static
-    name: gulf-watch-web
-    runtime: static
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/dist
-    envVars:
-      - key: VITE_API_URL
-        value: https://gulf-watch-api.onrender.com
-
-  - type: redis
-    name: gulf-watch-redis
-    plan: free
-    ipAllowList: []
+      - key: PYTHON_VERSION
+        value: 3.11.0
 
 databases:
   - name: gulf-watch-db
     databaseName: gulfwatch
     user: gulfwatch
-    plan: starter
+    plan: free

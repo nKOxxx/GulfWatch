@@ -1,31 +1,18 @@
-FROM node:20-alpine AS backend-build
-
-WORKDIR /app/backend
-COPY backend/package*.json ./
-RUN npm ci
-COPY backend/ ./
-RUN npm run build
-
-FROM node:20-alpine AS frontend-build
-
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm ci
-COPY frontend/ ./
-RUN npm run build
-
-FROM node:20-alpine
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy backend
-COPY --from=backend-build /app/backend/dist ./dist
-COPY --from=backend-build /app/backend/node_modules ./node_modules
-COPY --from=backend-build /app/backend/package*.json ./
+# Install dependencies
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy frontend
-COPY --from=frontend-build /app/frontend/dist ./public
+# Copy backend code
+COPY backend/src ./src
 
-EXPOSE 3001
+# Environment
+ENV PORT=8000
+ENV PYTHONPATH=/app
 
-CMD ["node", "dist/index.js"]
+EXPOSE 8000
+
+CMD ["python", "-m", "uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000"]
