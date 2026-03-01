@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://gulf-watch-api.onrender.com'
+// Read env at module level
+const API_URL = (import.meta as any).env?.VITE_API_URL || 'https://gulf-watch-api.onrender.com'
 
 interface Incident {
   id: string
@@ -29,7 +30,6 @@ function App() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // Fetch incidents
     fetch(`${API_URL}/incidents`)
       .then(res => res.json())
       .then(data => {
@@ -41,7 +41,6 @@ function App() {
         setLoading(false)
       })
 
-    // Fetch official sources
     fetch(`${API_URL}/sources/official`)
       .then(res => res.json())
       .then(data => setSources(data))
