@@ -158,6 +158,93 @@ async def initialize_database():
         raise HTTPException(status_code=500, detail=f"Database initialization failed: {str(e)}")
 
 
+@app.post("/admin/ingest-twitter")
+async def ingest_twitter(db: Session = Depends(get_db)):
+    """Manually trigger Twitter ingestion (admin only)"""
+    try:
+        from ingestion.twitter import TwitterIngestion
+        
+        ingestion = TwitterIngestion(db)
+        new_reports = ingestion.run_ingestion()
+        
+        # Auto-verify official sources
+        from models import RawReportCRUD
+        unprocessed = RawReportCRUD.get_unprocessed(db, limit=100)
+        verified_count = 0
+        
+        for report in unprocessed:
+            incident = ingestion.auto_verify_official(report)
+            if incident:
+                verified_count += 1
+        
+        return {
+            "status": "success",
+            "new_reports": new_reports,
+            "auto_verified": verified_count,
+            "message": f"Ingested {new_reports} reports, auto-verified {verified_count} incidents"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ingestion failed: {str(e)}")
+
+
+@app.get("/admin/demo-incidents")
+async def create_demo_incidents(db: Session = Depends(get_db)):
+    """Create demo incidents for testing (admin only)"""
+    try:
+        from geoalchemy2.elements import WKTElement
+        from datetime import datetime
+        from models import Incident, Source
+        
+        # Get official source
+        source = db.query(Source).filter(Source.handle == "uae_cd").first()
+        source_id = source.id if source else None
+        
+        # Create demo incidents
+        demos = [
+            {
+                "status": "CONFIRMED",
+                "event_type": "Air Defense",
+                "location_name": "Dubai Marina",
+                "location": WKTElement('POINT(55.1404 25.0765)', srid=4326),
+                "description": "Air defense systems activated over Dubai. Interception confirmed.",
+                "guidance": "Stay indoors. Away from windows. Follow official channels only.",
+                "verified_by": source_id,
+                "verification_method": "single_official"
+            },
+            {
+                "status": "PROBABLE",
+                "event_type": "Explosion",
+                "location_name": "Abu Dhabi",
+                "location": WKTElement('POINT(54.3773 24.4539)', srid=4326),
+                "description": "Reports of explosion heard in multiple locations. Awaiting confirmation."
+            }
+        ]
+        
+        created = []
+        for demo in demos:
+            incident = Incident(
+                **demo,
+                detected_at=datetime.utcnow(),
+                confirmed_at=datetime.utcnow() if demo.get("verified_by") else None,
+                is_active=True,
+                reports_count=1,
+                unique_sources_count=1,
+                total_credibility=100 if demo.get("verified_by") else 30
+            )
+            db.add(incident)
+            created.append(incident)
+        
+        db.commit()
+        
+        return {
+            "status": "success",
+            "created": len(created),
+            "incidents": [{"id": str(i.id), "type": i.event_type, "location": i.location_name} for i in created]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Demo creation failed: {str(e)}")
+
+
 @app.get("/", response_model=StatusResponse)
 async def root(db: Session = Depends(get_db)):
     """API status"""
