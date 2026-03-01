@@ -1,3 +1,22 @@
+# Gulf Watch ⚠️
+
+> **Verification-First Intelligence for the Arabian Gulf**
+> 
+> ⚠️ **CRITICAL: This system prioritizes accuracy over speed to prevent misinformation.**
+> 
+> In compliance with UAE and Gulf cybercrime laws, Gulf Watch:
+> - ✅ Only publishes verified or multi-sourced reports
+> - ✅ Shows source attribution for every incident
+> - ✅ Displays confidence scores (unconfirmed/probable/likely/confirmed)
+> - ✅ Never publishes single-source rumors
+> - ✅ Prioritizes official sources over social media
+> 
+> **False information carries criminal penalties in the UAE. This tool is designed to combat, not spread, misinformation.**
+> 
+> [Read our Verification Philosophy →](VERIFICATION_PHILOSOPHY.md)
+
+---
+
 # Gulf Watch
 
 **Location-based threat intelligence and verification platform for the Arabian Gulf.**
