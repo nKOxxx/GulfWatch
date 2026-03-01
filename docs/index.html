@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gulf Watch — Stay Safe</title>
+    <title>Gulf Watch</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             background: #000;
             color: #fff;
-            overflow: hidden;
         }
-        .app { height: 100vh; display: flex; flex-direction: column; }
         
-        /* Header - Simple */
+        /* Header */
         .header {
             background: #000;
             border-bottom: 1px solid #222;
@@ -24,176 +22,159 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .logo { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-        .status-dot {
+        .logo { font-size: 20px; font-weight: 800; }
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #00ff88;
+            font-weight: 600;
+        }
+        .live-dot {
             width: 8px;
             height: 8px;
             background: #00ff88;
             border-radius: 50%;
-            animation: pulse 2s infinite;
+            animation: blink 1.5s infinite;
         }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .location-pill {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            color: #fff;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
         
-        /* Safety Banner */
-        .safety-banner {
-            background: linear-gradient(90deg, #ff4444, #ff8800);
+        /* Alert Banner */
+        .alert-banner {
+            background: #ff4444;
             color: #fff;
             padding: 12px 16px;
-            text-align: center;
             font-size: 14px;
             font-weight: 600;
-        }
-        
-        /* Main Content */
-        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        
-        /* Tabs */
-        .tabs {
             display: flex;
-            border-bottom: 1px solid #222;
-            background: #000;
+            align-items: center;
+            gap: 10px;
         }
-        .tab {
-            flex: 1;
-            background: none;
-            border: none;
-            color: #666;
-            padding: 14px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
+        
+        /* Map Section */
+        .map-section {
             position: relative;
+            height: 240px;
         }
-        .tab.active {
-            color: #fff;
-        }
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 25%;
-            right: 25%;
-            height: 3px;
-            background: #1d9bf0;
-            border-radius: 3px 3px 0 0;
-        }
-        
-        /* Content Area */
-        .content { flex: 1; overflow-y: auto; }
-        
-        /* Map View */
-        .map-view { height: 100%; position: relative; }
         #map { width: 100%; height: 100%; }
         .map-overlay {
             position: absolute;
-            bottom: 20px;
-            left: 16px;
-            right: 16px;
-            background: rgba(0,0,0,0.9);
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.95);
             backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: 12px;
+            padding: 12px;
             border: 1px solid #333;
         }
-        .nearby-alert {
+        .alert-item {
             display: flex;
+            gap: 10px;
             align-items: flex-start;
-            gap: 12px;
         }
         .alert-icon {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: #ff4444;
-            border-radius: 10px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             flex-shrink: 0;
         }
-        .alert-content h3 { font-size: 15px; margin-bottom: 4px; }
-        .alert-content p { font-size: 13px; color: #aaa; line-height: 1.4; }
-        .alert-time { font-size: 11px; color: #666; margin-top: 6px; }
+        .alert-content h4 { font-size: 14px; margin-bottom: 2px; }
+        .alert-content p { font-size: 12px; color: #aaa; line-height: 1.4; }
+        .alert-meta { font-size: 11px; color: #666; margin-top: 4px; }
         
-        /* Feed View */
-        .feed-view { background: #000; }
-        
-        /* Quick Report */
-        .quick-report {
+        /* Quick Actions */
+        .quick-actions {
+            background: #0a0a0a;
             padding: 16px;
             border-bottom: 1px solid #222;
         }
-        .report-buttons {
+        .section-title {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .action-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
         }
-        .report-btn {
+        .action-btn {
             background: #1a1a1a;
             border: 1px solid #333;
             border-radius: 12px;
-            padding: 16px 8px;
+            padding: 14px 4px;
             color: #fff;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 6px;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
-        .report-btn:active {
-            transform: scale(0.95);
-            background: #252525;
+        .action-btn:active { transform: scale(0.96); background: #252525; }
+        .action-btn .emoji { font-size: 24px; }
+        .action-btn.danger { background: #ff4444; border-color: #ff4444; }
+        
+        /* Feed Section */
+        .feed-section { background: #000; }
+        .feed-header-bar {
+            padding: 12px 16px;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .report-btn .emoji { font-size: 28px; }
-        .report-btn.primary {
-            background: #ff4444;
-            border-color: #ff4444;
+        .feed-title { font-size: 16px; font-weight: 700; }
+        .feed-filter {
+            font-size: 13px;
+            color: #1d9bf0;
+            cursor: pointer;
         }
         
-        /* Feed Items */
         .feed-item {
-            padding: 16px;
+            padding: 14px 16px;
             border-bottom: 1px solid #1a1a1a;
             display: flex;
             gap: 12px;
         }
-        .feed-avatar {
+        .avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             flex-shrink: 0;
         }
-        .feed-body { flex: 1; }
-        .feed-header {
+        .post-content { flex: 1; min-width: 0; }
+        .post-header {
             display: flex;
             align-items: center;
             gap: 6px;
             margin-bottom: 4px;
         }
-        .feed-author { font-weight: 700; font-size: 15px; }
-        .feed-time { color: #666; font-size: 13px; }
-        .verified { color: #1d9bf0; margin-left: 2px; }
-        .feed-text { font-size: 15px; line-height: 1.5; margin-bottom: 8px; }
-        .feed-tag {
+        .post-author { font-weight: 700; font-size: 15px; }
+        .verified { color: #1d9bf0; font-size: 14px; }
+        .post-time { color: #666; font-size: 13px; margin-left: auto; }
+        .post-text { font-size: 15px; line-height: 1.5; margin-bottom: 8px; }
+        .post-tag {
             display: inline-flex;
             align-items: center;
             gap: 4px;
@@ -202,126 +183,110 @@
             border-radius: 12px;
             font-size: 12px;
             color: #888;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
-        .feed-tag.verified { background: #003311; color: #00ff88; }
-        .feed-tag.explosion { background: #330000; color: #ff4444; }
-        .feed-tag.interceptor { background: #003311; color: #00ff88; }
-        .feed-actions {
+        .post-tag.verified { background: #002211; color: #00ff88; }
+        .post-tag.explosion { background: #220000; color: #ff6666; }
+        .post-tag.interceptor { background: #002211; color: #00ff88; }
+        .post-actions {
             display: flex;
             gap: 20px;
             color: #666;
             font-size: 13px;
         }
-        .feed-action {
+        .post-action {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             cursor: pointer;
         }
         
-        /* Safety Tab */
-        .safety-view { padding: 16px; }
+        /* Safety Card */
         .safety-card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+            padding: 16px;
         }
-        .safety-card h2 {
-            font-size: 18px;
+        .safety-title {
+            font-size: 14px;
+            font-weight: 700;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .safety-card p { font-size: 14px; color: #aaa; line-height: 1.6; }
-        .checklist { list-style: none; margin-top: 12px; }
-        .checklist li {
-            padding: 10px 0;
-            border-bottom: 1px solid #2a2a2a;
-            display: flex;
-            align-items: center;
+        .emergency-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            font-size: 14px;
         }
-        .checklist li:last-child { border-bottom: none; }
-        .check { color: #00ff88; }
-        
-        /* Bottom Action */
-        .fab {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 56px;
-            height: 56px;
-            background: #1d9bf0;
-            border: none;
-            border-radius: 50%;
+        .emergency-btn {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 14px 8px;
+            text-align: center;
+            text-decoration: none;
             color: #fff;
-            font-size: 28px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(29,155,240,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
         }
-        .fab:active { transform: scale(0.95); }
+        .emergency-btn .number {
+            font-size: 20px;
+            font-weight: 800;
+            color: #00ff88;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .emergency-btn .label { font-size: 11px; color: #888; }
         
-        /* Modal */
-        .modal-overlay {
+        /* Report Modal */
+        .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             display: none;
-            align-items: flex-end;
             z-index: 1000;
-        }
-        .modal-overlay.active { display: flex; }
-        .modal-sheet {
-            background: #1a1a1a;
-            border-radius: 24px 24px 0 0;
-            width: 100%;
-            max-height: 90vh;
             overflow-y: auto;
-            animation: slideUp 0.3s ease;
         }
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
+        .modal.active { display: block; }
+        .modal-content {
+            background: #0a0a0a;
+            min-height: 100vh;
         }
         .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid #333;
+            padding: 16px;
+            border-bottom: 1px solid #222;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            background: #0a0a0a;
+            z-index: 10;
         }
         .modal-title { font-size: 18px; font-weight: 700; }
-        .modal-close {
+        .close-btn {
             background: #2a2a2a;
             border: none;
             color: #fff;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
         }
-        .modal-body { padding: 20px; }
+        .modal-body { padding: 16px; }
+        
         .input-group { margin-bottom: 20px; }
         .input-label {
-            display: block;
-            font-size: 14px;
+            font-size: 13px;
             color: #888;
-            margin-bottom: 8px;
             font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
         }
         .text-input {
             width: 100%;
-            background: #0a0a0a;
+            background: #1a1a1a;
             border: 1px solid #333;
             border-radius: 12px;
             padding: 16px;
@@ -331,26 +296,27 @@
             resize: none;
         }
         .text-input:focus { outline: none; border-color: #1d9bf0; }
-        .location-chips {
+        
+        .chip-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
         }
         .chip {
-            background: #2a2a2a;
-            border: 1px solid #3a3a3a;
+            background: #1a1a1a;
+            border: 1px solid #333;
             padding: 10px 16px;
             border-radius: 20px;
             font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
-        .chip:hover { background: #3a3a3a; }
+        .chip:hover { background: #252525; }
         .chip.selected {
             background: #1d9bf0;
             border-color: #1d9bf0;
-            color: #fff;
         }
+        
         .submit-btn {
             width: 100%;
             background: #1d9bf0;
@@ -363,129 +329,117 @@
             cursor: pointer;
             margin-top: 10px;
         }
-        .submit-btn:disabled {
-            background: #333;
-            cursor: not-allowed;
-        }
+        .submit-btn:disabled { background: #333; }
         
         /* Desktop */
         @media (min-width: 768px) {
-            .app { max-width: 480px; margin: 0 auto; border-left: 1px solid #222; border-right: 1px solid #222; }
+            body { display: flex; justify-content: center; }
+            .app { width: 100%; max-width: 480px; border-left: 1px solid #222; border-right: 1px solid #222; }
         }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 0; }
     </style>
 </head>
 <body>
     <div class="app">
+        <!-- Header -->
         <header class="header">
-            <div class="logo">
-                🛡️ Gulf Watch
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <span class="status-dot"></span>
-                <span class="location-pill">📍 Dubai</span>
+            <div class="logo">🛡️ Gulf Watch</div>
+            <div class="live-indicator">
+                <span class="live-dot"></span>
+                Live
             </div>
         </header>
         
-        <div class="safety-banner">
-            ⚠️ Active alerts in your area. Stay indoors.
+        <!-- Alert Banner -->
+        <div class="alert-banner">
+            ⚠️ Active incident near you. Stay indoors.
         </div>
         
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('map')">Map</button>
-            <button class="tab" onclick="switchTab('feed')">Updates</button>
-            <button class="tab" onclick="switchTab('safety')">Stay Safe</button>
-        </div>
-        
-        <div class="main">
-            <!-- Map View -->
-            <div class="content map-view" id="mapView">
-                <div id="map"></div>
-                <div class="map-overlay">
-                    <div class="nearby-alert">
-                        <div class="alert-icon">🚨</div>
-                        <div class="alert-content">
-                            <h3>Explosion reported nearby</h3>
-                            <p>Fairmont Hotel, Palm Jumeirah. Air defense active.</p>
-                            <div class="alert-time">8 minutes ago · Verified</div>
-                        </div>
+        <!-- Map -->
+        <div class="map-section">
+            <div id="map"></div>
+            <div class="map-overlay">
+                <div class="alert-item">
+                    <div class="alert-icon">🚨</div>
+                    <div class="alert-content">
+                        <h4>Explosion — Palm Jumeirah</h4>
+                        <p>Fairmont Hotel area. Air defense active. Stay away from windows.</p>
+                        <div class="alert-meta">5 min ago · Verified by Civil Defense</div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Feed View -->
-            <div class="content feed-view" id="feedView" style="display: none;">
-                <div class="quick-report">
-                    <div class="report-buttons">
-                        <button class="report-btn primary" onclick="openReport('explosion')">
-                            <span class="emoji">💥</span>
-                            Explosion
-                        </button>
-                        <button class="report-btn" onclick="openReport('interceptor')">
-                            <span class="emoji">🚀</span>
-                            Interceptor
-                        </button>
-                        <button class="report-btn" onclick="openReport('siren')">
-                            <span class="emoji">🚨</span>
-                            Siren
-                        </button>
-                    </div>
-                </div>
-                
-                <div id="feed"></div>
-            </div>
-            
-            <!-- Safety View -->
-            <div class="content safety-view" id="safetyView" style="display: none;">
-                <div class="safety-card">
-                    <h2>🛡️ Immediate Actions</h2>
-                    <ul class="checklist">
-                        <li><span class="check">✓</span> Stay away from windows</li>
-                        <li><span class="check">✓</span> Move to interior rooms</li>
-                        <li><span class="check">✓</span> Keep phone charged</li>
-                        <li><span class="check">✓</span> Follow @DubaiCivilDef</li>
-                    </ul>
-                </div>
-                
-                <div class="safety-card">
-                    <h2>📞 Emergency Numbers</h2>
-                    <ul class="checklist">
-                        <li>🚨 Police: <strong>999</strong></li>
-                        <li>🚑 Ambulance: <strong>998</strong></li>
-                        <li>🔥 Fire: <strong>997</strong></li>
-                        <li>📰 Official: <strong>@DubaiCivilDef</strong></li>
-                    </ul>
-                </div>
-                
-                <div class="safety-card">
-                    <h2>📍 Nearest Shelter</h2>
-                    <p>Based on your location (Dubai Creek Harbour):</p>
-                    <ul class="checklist">
-                        <li><span class="check">📍</span> Creek Harbour Mall — 0.8km</li>
-                        <li><span class="check">📍</span> Dubai Festival City — 3.2km</li>
-                    </ul>
-                </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="section-title">REPORT WHAT YOU SEE</div>
+            <div class="action-grid">
+                <button class="action-btn danger" onclick="openReport('explosion')">
+                    <span class="emoji">💥</span>
+                    Explosion
+                </button>
+                <button class="action-btn" onclick="openReport('interceptor')">
+                    <span class="emoji">🚀</span>
+                    Interceptor
+                </button>
+                <button class="action-btn" onclick="openReport('siren')">
+                    <span class="emoji">🚨</span>
+                    Siren
+                </button>
+                <button class="action-btn" onclick="openReport('smoke')">
+                    <span class="emoji">💨</span>
+                    Smoke
+                </button>
             </div>
         </div>
         
-        <button class="fab" onclick="openReport()">＋</button>
+        <!-- Feed -->
+        <div class="feed-section">
+            <div class="feed-header-bar">
+                <span class="feed-title">Live Updates</span>
+                <span class="feed-filter">Latest</span>
+            </div>
+            <div id="feed"></div>
+        </div>
+        
+        <!-- Safety -->
+        <div class="safety-card">
+            <div class="safety-title">🆘 Emergency Numbers</div>
+            <div class="emergency-grid">
+                <a href="tel:999" class="emergency-btn">
+                    <span class="number">999</span>
+                    <span class="label">Police</span>
+                </a>
+                <a href="tel:998" class="emergency-btn">
+                    <span class="number">998</span>
+                    <span class="label">Ambulance</span>
+                </a>
+                <a href="tel:997" class="emergency-btn">
+                    <span class="number">997</span>
+                    <span class="label">Fire</span>
+                </a>
+            </div>
+        </div>
     </div>
     
     <!-- Report Modal -->
-    <div class="modal-overlay" id="reportModal">
-        <div class="modal-sheet">
+    <div class="modal" id="reportModal">
+        <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title">Report Incident</div>
-                <button class="modal-close" onclick="closeReport()">×</button>
+                <button class="close-btn" onclick="closeReport()">×</button>
             </div>
             <div class="modal-body">
                 <div class="input-group">
                     <label class="input-label">What did you see or hear?</label>
-                    <textarea class="text-input" id="reportText" rows="4" placeholder="Describe what you observed..."></textarea>
+                    <textarea class="text-input" id="reportText" rows="4" placeholder="Describe what happened..."></textarea>
                 </div>
                 
                 <div class="input-group">
-                    <label class="input-label">Your location</label>
-                    <div class="location-chips">
+                    <label class="input-label">Location</label>
+                    <div class="chip-grid" id="locationChips">
                         <span class="chip selected" data-location="Creek Harbour">Creek Harbour</span>
                         <span class="chip" data-location="Palm Jumeirah">Palm Jumeirah</span>
                         <span class="chip" data-location="Downtown">Downtown</span>
@@ -495,33 +449,21 @@
                     </div>
                 </div>
                 
-                <div class="input-group">
-                    <label class="input-label">Type</label>
-                    <div class="location-chips">
-                        <span class="chip selected" data-type="explosion">💥 Explosion</span>
-                        <span class="chip" data-type="interceptor">🚀 Interceptor</span>
-                        <span class="chip" data-type="siren">🚨 Siren</span>
-                        <span class="chip" data-type="smoke">💨 Smoke</span>
-                    </div>
-                </div>
-                
                 <button class="submit-btn" onclick="submitReport()">Share Report</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Initialize map
-        const map = L.map('map', { zoomControl: false }).setView([25.2571, 55.2957], 12);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            maxZoom: 19
-        }).addTo(map);
+        // Map
+        const map = L.map('map', { zoomControl: false }).setView([25.2571, 55.2957], 11);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
         
-        // Add incident markers
+        // Incidents
         const incidents = [
             { lat: 25.1156, lng: 55.1284, title: 'Fairmont Hotel', type: 'explosion' },
             { lat: 25.1412, lng: 55.1853, title: 'Burj Al Arab area', type: 'explosion' },
-            { lat: 25.1972, lng: 55.2962, title: 'Near Burj Khalifa', type: 'explosion' },
+            { lat: 25.1972, lng: 55.2962, title: 'Burj Khalifa area', type: 'explosion' },
             { lat: 24.9857, lng: 55.0274, title: 'Jebel Ali Port', type: 'fire' },
             { lat: 25.25, lng: 55.30, title: 'Air defense', type: 'interceptor' }
         ];
@@ -529,93 +471,37 @@
         incidents.forEach(i => {
             const color = i.type === 'interceptor' ? '#00ff88' : '#ff4444';
             L.circleMarker([i.lat, i.lng], {
-                radius: 10,
-                fillColor: color,
-                color: '#fff',
-                weight: 2,
-                fillOpacity: 0.8
+                radius: 10, fillColor: color, color: '#fff', weight: 2, fillOpacity: 0.9
             }).addTo(map).bindPopup(i.title);
         });
         
-        // Tab switching
-        function switchTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            document.getElementById('mapView').style.display = tab === 'map' ? 'block' : 'none';
-            document.getElementById('feedView').style.display = tab === 'feed' ? 'block' : 'none';
-            document.getElementById('safetyView').style.display = tab === 'safety' ? 'block' : 'none';
-            
-            if (tab === 'map') setTimeout(() => map.invalidateSize(), 10);
-        }
-        
         // Feed data
         const posts = [
-            {
-                author: 'Ahmed',
-                initial: 'A',
-                time: '2m',
-                text: 'Loud explosion from Creek Harbour direction. Saw smoke rising.',
-                location: 'Creek Harbour',
-                type: 'explosion',
-                verified: true,
-                replies: 12,
-                likes: 45
-            },
-            {
-                author: 'Dubai Eye',
-                initial: 'D',
-                time: '5m',
-                text: 'Air defense interceptors launched over Palm area. Multiple booms heard.',
-                location: 'Palm Jumeirah',
-                type: 'interceptor',
-                verified: true,
-                replies: 89,
-                likes: 234
-            },
-            {
-                author: 'Sarah',
-                initial: 'S',
-                time: '8m',
-                text: 'Sirens going off in Downtown. Everyone heading to parking shelters.',
-                location: 'Downtown',
-                type: 'siren',
-                verified: false,
-                replies: 23,
-                likes: 67
-            },
-            {
-                author: 'Civil Defense',
-                initial: 'C',
-                time: '12m',
-                text: 'Official: Interceptor systems activated. Stay indoors, away from windows. Follow official channels only.',
-                location: 'Dubai',
-                type: 'interceptor',
-                verified: true,
-                official: true,
-                replies: 456,
-                likes: 1203
-            }
+            { author: 'Civil Defense', initial: 'C', verified: true, time: '2m', text: 'Interceptor systems activated. Stay indoors, away from windows. Follow official channels only.', location: 'Dubai', type: 'interceptor', replies: 456, likes: 1203 },
+            { author: 'Ahmed', initial: 'A', verified: false, time: '3m', text: 'Loud explosion from Creek Harbour direction. Saw smoke rising near the water.', location: 'Creek Harbour', type: 'explosion', replies: 12, likes: 45 },
+            { author: 'Dubai Eye', initial: 'D', verified: true, time: '5m', text: 'Air defense interceptors launched over Palm area. Multiple booms heard across city.', location: 'Palm Jumeirah', type: 'interceptor', replies: 89, likes: 234 },
+            { author: 'Sarah', initial: 'S', verified: false, time: '8m', text: 'Sirens going off in Downtown. Everyone heading to parking shelters.', location: 'Downtown', type: 'siren', replies: 23, likes: 67 },
+            { author: 'Marina Resident', initial: 'M', verified: false, time: '12m', text: 'Debris falling near Marina Walk. Stay clear of the area.', location: 'Marina', type: 'explosion', replies: 34, likes: 89 }
         ];
         
         function renderFeed() {
             document.getElementById('feed').innerHTML = posts.map(p => `
                 <div class="feed-item">
-                    <div class="feed-avatar">${p.initial}</div>
-                    <div class="feed-body">
-                        <div class="feed-header">
-                            <span class="feed-author">${p.author}</span>
+                    <div class="avatar">${p.initial}</div>
+                    <div class="post-content">
+                        <div class="post-header">
+                            <span class="post-author">${p.author}</span>
                             ${p.verified ? '<span class="verified">✓</span>' : ''}
-                            <span class="feed-time">${p.time}</span>
+                            <span class="post-time">${p.time}</span>
                         </div>
-                        <div class="feed-text">${p.text}</div>
-                        <div class="feed-tag ${p.type} ${p.verified ? 'verified' : ''}">
-                            ${p.verified ? '✓' : '⏳'} ${p.location}
+                        <div class="post-text">${p.text}</div>
+                        <div class="post-tag ${p.verified ? 'verified' : p.type}">
+                            ${p.verified ? '✓ Verified' : p.type === 'explosion' ? '💥 ' + p.location : p.type === 'interceptor' ? '🚀 ' + p.location : '🚨 ' + p.location}
                         </div>
-                        <div class="feed-actions">
-                            <span class="feed-action">💬 ${p.replies}</span>
-                            <span class="feed-action">🔄 Share</span>
-                            <span class="feed-action">❤️ ${p.likes}</span>
+                        <div class="post-actions">
+                            <span class="post-action">💬 ${p.replies}</span>
+                            <span class="post-action">🔄</span>
+                            <span class="post-action">❤️ ${p.likes}</span>
                         </div>
                     </div>
                 </div>
@@ -623,60 +509,44 @@
         }
         renderFeed();
         
-        // Report modal
+        // Modal
+        let reportType = '';
         function openReport(type) {
+            reportType = type;
             document.getElementById('reportModal').classList.add('active');
-            if (type) {
-                // Pre-select type
-                document.querySelectorAll('[data-type]').forEach(c => c.classList.remove('selected'));
-                document.querySelector(`[data-type="${type}"]`)?.classList.add('selected');
-            }
+            document.body.style.overflow = 'hidden';
         }
         function closeReport() {
             document.getElementById('reportModal').classList.remove('active');
+            document.body.style.overflow = '';
         }
         
         // Chip selection
-        document.querySelectorAll('.chip').forEach(chip => {
+        document.querySelectorAll('#locationChips .chip').forEach(chip => {
             chip.addEventListener('click', function() {
-                const group = this.hasAttribute('data-location') ? 'data-location' : 'data-type';
-                document.querySelectorAll(`[${group}]`).forEach(c => c.classList.remove('selected'));
+                document.querySelectorAll('#locationChips .chip').forEach(c => c.classList.remove('selected'));
                 this.classList.add('selected');
             });
         });
         
-        // Submit report
+        // Submit
         function submitReport() {
             const text = document.getElementById('reportText').value;
             if (!text.trim()) return;
             
-            const location = document.querySelector('[data-location].selected')?.dataset.location || 'Unknown';
-            const type = document.querySelector('[data-type].selected')?.dataset.type || 'other';
+            const location = document.querySelector('#locationChips .chip.selected')?.dataset.location || 'Unknown';
             
             posts.unshift({
-                author: 'You',
-                initial: 'Y',
-                time: 'now',
-                text: text,
-                location: location,
-                type: type,
-                verified: false,
-                replies: 0,
-                likes: 0
+                author: 'You', initial: 'Y', verified: false, time: 'now',
+                text: text, location: location, type: reportType || 'other',
+                replies: 0, likes: 0
             });
             
             renderFeed();
             closeReport();
             document.getElementById('reportText').value = '';
-            
-            // Switch to feed
-            document.querySelectorAll('.tab')[1].click();
+            window.scrollTo(0, 400);
         }
-        
-        // Close modal on outside click
-        document.getElementById('reportModal').addEventListener('click', (e) => {
-            if (e.target.id === 'reportModal') closeReport();
-        });
     </script>
 </body>
 </html>
