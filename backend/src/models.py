@@ -50,7 +50,7 @@ class Source(Base):
     region = Column(String(100))
     follower_count = Column(Integer, default=0)
     is_active = Column(Boolean, default=True)
-    metadata = Column(JSONB, default={})
+    source_metadata = Column('metadata', JSONB, default={})
     created_at = Column(DateTime(timezone=True), default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
     
