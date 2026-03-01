@@ -128,6 +128,7 @@ async def startup():
         print(f"❌ Database initialization failed: {e}")
 
 
+@app.get("/admin/init-db")
 @app.post("/admin/init-db")
 async def initialize_database():
     """Initialize database - enable PostGIS and create tables"""
