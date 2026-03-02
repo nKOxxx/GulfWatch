@@ -34,6 +34,16 @@ app = FastAPI(
     version="2.0.0"
 )
 
+# Startup event to initialize database
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database on startup"""
+    try:
+        init_database()
+        print("✅ Database initialized on startup")
+    except Exception as e:
+        print(f"⚠️ Database init warning: {e}")
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
@@ -187,6 +197,40 @@ async def reset_database():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database reset failed: {str(e)}")
+
+
+@app.get("/admin/health")
+async def health_check():
+    """Detailed health check with diagnostics"""
+    import os
+    from models import DATABASE_URL, engine
+    
+    # Mask password in connection string
+    db_url_masked = DATABASE_URL
+    if "@" in db_url_masked:
+        parts = db_url_masked.split("@")
+        if ":" in parts[0]:
+            db_url_masked = parts[0].split(":")[0] + ":***@" + parts[1]
+    
+    result = {
+        "status": "checking",
+        "database_url_configured": bool(os.getenv('DATABASE_URL')),
+        "database_url_masked": db_url_masked[:50] + "..." if len(db_url_masked) > 50 else db_url_masked,
+        "database_connected": False,
+        "error": None
+    }
+    
+    try:
+        # Test connection
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+            result["database_connected"] = True
+            result["status"] = "healthy"
+    except Exception as e:
+        result["error"] = str(e)
+        result["status"] = "unhealthy"
+    
+    return result
 
 
 @app.get("/admin/migrate")
@@ -801,6 +845,9 @@ async def create_historical_data(db: Session = Depends(get_db)):
 async def root(db: Session = Depends(get_db)):
     """API status"""
     try:
+        # Test database connection
+        db.execute(text("SELECT 1"))
+        
         active_count = db.query(Incident).filter(
             Incident.is_active == True,
             Incident.status.notin_(['FALSE_ALARM', 'RESOLVED'])
@@ -817,8 +864,12 @@ async def root(db: Session = Depends(get_db)):
             database_connected=True
         )
     except Exception as e:
+        import traceback
+        error_msg = str(e)
+        print(f"❌ Database error: {error_msg}")
+        print(traceback.format_exc())
         return StatusResponse(
-            status="error",
+            status=f"error: {error_msg[:50]}",
             active_incidents=0,
             official_sources=0,
             database_connected=False
