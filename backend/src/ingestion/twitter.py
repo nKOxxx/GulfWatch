@@ -64,8 +64,32 @@ class TwitterIngestion:
         'bahrainpolice',    # Bahrain Police
     ]
     
+    # Kuwait Official handles
+    KUWAIT_HANDLES = [
+        'MOIKuwait',        # Kuwait Ministry of Interior
+        'Kuw_civil_def',    # Kuwait Civil Defense
+        'KUNA_en',          # Kuwait News Agency
+        'KuwaitArmy',       # Kuwait Army
+    ]
+    
+    # Israel Official handles
+    ISRAEL_HANDLES = [
+        'IDF',              # Israel Defense Forces
+        'IDFhomefront',     # Home Front Command
+        'ILPolice',         # Israel Police
+        'IsraeliPM',        # Prime Minister
+    ]
+    
+    # Iran Official handles
+    IRAN_HANDLES = [
+        'IRIMFA_EN',        # Iran Foreign Ministry
+        'IRGCofficial',     # IRGC
+        'Tasnimnews_En',    # Tasnim News
+        'PressTV',          # Press TV
+    ]
+    
     # Combined list for monitoring
-    MONITORED_HANDLES = UAE_HANDLES + SAUDI_HANDLES + QATAR_HANDLES + BAHRAIN_HANDLES
+    MONITORED_HANDLES = UAE_HANDLES + SAUDI_HANDLES + QATAR_HANDLES + BAHRAIN_HANDLES + KUWAIT_HANDLES + ISRAEL_HANDLES + IRAN_HANDLES
     
     # Keywords that indicate threats/incidents
     THREAT_KEYWORDS = [
