@@ -266,6 +266,192 @@ sources:
     type: police
     credibility: 95
     priority: high
+    
+  # ==================== TIER 1 NEWS OUTLETS ====================
+  - name: "Reuters"
+    platform: twitter
+    handle: "@Reuters"
+    type: international_media
+    credibility: 95
+    priority: high
+    
+  - name: "Reuters Middle East"
+    platform: twitter
+    handle: "@ReutersMiddleEast"
+    type: international_media
+    credibility: 95
+    priority: high
+    
+  - name: "Associated Press"
+    platform: twitter
+    handle: "@AP"
+    type: international_media
+    credibility: 95
+    priority: high
+    
+  - name: "BBC News"
+    platform: twitter
+    handle: "@BBCNews"
+    type: international_media
+    credibility: 95
+    priority: high
+    
+  - name: "BBC Middle East"
+    platform: twitter
+    handle: "@BBCMiddleEast"
+    type: international_media
+    credibility: 95
+    priority: high
+    
+  - name: "Agence France-Presse"
+    platform: twitter
+    handle: "@AFP"
+    type: international_media
+    credibility: 95
+    priority: high
+    
+  - name: "Al Jazeera"
+    platform: twitter
+    handle: "@AJEnglish"
+    type: regional_media
+    credibility: 90
+    priority: high
+    
+  - name: "Al Jazeera Breaking"
+    platform: twitter
+    handle: "@AJENews"
+    type: regional_media
+    credibility: 90
+    priority: high
+    
+  # ==================== TIER 2 REGIONAL LEADERS ====================
+  - name: "The National"
+    platform: twitter
+    handle: "@TheNationalNews"
+    type: regional_media
+    credibility: 85
+    priority: high
+    
+  - name: "Gulf News"
+    platform: twitter
+    handle: "@GulfNews"
+    type: regional_media
+    credibility: 85
+    priority: high
+    
+  - name: "Khaleej Times"
+    platform: twitter
+    handle: "@khaleejtimes"
+    type: regional_media
+    credibility: 80
+    priority: medium
+    
+  - name: "Arab News"
+    platform: twitter
+    handle: "@arabnews"
+    type: regional_media
+    credibility: 80
+    priority: medium
+    
+  - name: "Al Arabiya"
+    platform: twitter
+    handle: "@AlArabiya"
+    type: regional_media
+    credibility: 80
+    priority: medium
+    
+  - name: "Al Arabiya English"
+    platform: twitter
+    handle: "@AlArabiya_En"
+    type: regional_media
+    credibility: 80
+    priority: medium
+    
+  # ==================== TIER 3 INTERNATIONAL BUSINESS ====================
+  - name: "Bloomberg"
+    platform: twitter
+    handle: "@Bloomberg"
+    type: international_media
+    credibility: 90
+    priority: high
+    
+  - name: "Bloomberg Middle East"
+    platform: twitter
+    handle: "@BloombergME"
+    type: international_media
+    credibility: 90
+    priority: high
+    
+  - name: "Wall Street Journal"
+    platform: twitter
+    handle: "@WSJ"
+    type: international_media
+    credibility: 90
+    priority: high
+    
+  - name: "Financial Times"
+    platform: twitter
+    handle: "@FinancialTimes"
+    type: international_media
+    credibility: 90
+    priority: high
+    
+  - name: "CNN"
+    platform: twitter
+    handle: "@CNN"
+    type: international_media
+    credibility: 85
+    priority: medium
+    
+  - name: "CNN International"
+    platform: twitter
+    handle: "@cnni"
+    type: international_media
+    credibility: 85
+    priority: medium
+    
+  # ==================== TIER 4 DEFENSE SPECIALIZED ====================
+  - name: "Jane's Defence Weekly"
+    platform: twitter
+    handle: "@JanesINTEL"
+    type: defense_media
+    credibility: 95
+    priority: high
+    
+  - name: "Defense News"
+    platform: twitter
+    handle: "@defense_news"
+    type: defense_media
+    credibility: 90
+    priority: high
+    
+  - name: "Breaking Defense"
+    platform: twitter
+    handle: "@BreakingDefense"
+    type: defense_media
+    credibility: 85
+    priority: medium
+    
+  - name: "Middle East Eye"
+    platform: twitter
+    handle: "@MiddleEastEye"
+    type: regional_media
+    credibility: 75
+    priority: medium
+    
+  - name: "Middle East Monitor"
+    platform: twitter
+    handle: "@MiddleEastMnt"
+    type: regional_media
+    credibility: 70
+    priority: low
+    
+  - name: "Al-Monitor"
+    platform: twitter
+    handle: "@AlMonitor"
+    type: regional_media
+    credibility: 75
+    priority: medium
 
 # Verification rules
 rules:
