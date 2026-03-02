@@ -110,23 +110,31 @@ body {
   overflow: hidden;
 }
 
-/* Map */
+/* Map - Full Screen Tactical Display */
 .tac-map-area {
   flex: 1;
-  padding: 20px;
   position: relative;
+  padding: 0;
+  margin: 0;
 }
 
 .tac-map {
   width: 100%;
   height: 100%;
-  border: 2px solid #2a3f5f;
+  border: none;
   z-index: 1;
 }
 
-/* Leaflet Dark Theme Overrides */
+/* Leaflet Dark Theme Overrides - Full Screen */
 .leaflet-container {
   background: #0d1b2a !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Remove any default margins/padding from Leaflet */
+.leaflet-control-container {
+  margin: 0 !important;
 }
 
 .leaflet-popup-content-wrapper {
@@ -142,8 +150,8 @@ body {
 /* Map Overlay */
 .map-overlay {
   position: absolute;
-  top: 30px;
-  left: 30px;
+  top: 10px;
+  left: 10px;
   z-index: 1000;
   pointer-events: none;
 }
