@@ -347,9 +347,9 @@ async def clear_demo_data(db: Session = Depends(get_db)):
         incident_count = db.query(Incident).count()
         report_count = db.query(RawReport).count()
         
-        # Delete all incidents and reports
-        db.query(Incident).delete()
+        # Delete raw_reports first (has FK to incidents), then incidents
         db.query(RawReport).delete()
+        db.query(Incident).delete()
         db.commit()
         
         return {
