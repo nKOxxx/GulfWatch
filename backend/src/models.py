@@ -265,6 +265,20 @@ class Notification(Base):
 
 def init_database():
     """Create all tables"""
+    from sqlalchemy import text
+    
+    # Drop conflicting indexes if they exist (for clean restart)
+    with engine.connect() as conn:
+        conn.execute(text("DROP INDEX IF EXISTS idx_incidents_location;"))
+        conn.execute(text("DROP INDEX IF EXISTS idx_incidents_source_handle;"))
+        conn.execute(text("DROP INDEX IF EXISTS idx_incidents_status;"))
+        conn.execute(text("DROP INDEX IF EXISTS idx_incidents_time;"))
+        conn.execute(text("DROP INDEX IF EXISTS idx_incidents_region;"))
+        conn.execute(text("DROP INDEX IF EXISTS idx_raw_reports_processed;"))
+        conn.execute(text("DROP INDEX IF EXISTS idx_raw_reports_time;"))
+        conn.execute(text("DROP INDEX IF EXISTS idx_raw_reports_source;"))
+        conn.commit()
+    
     Base.metadata.create_all(bind=engine)
 
 
