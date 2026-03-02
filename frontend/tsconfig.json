@@ -15,7 +15,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": false,
-    "types": ["react", "react-dom", "mapbox-gl"]
+    "types": ["react", "react-dom", "leaflet"]
   },
   "include": ["src"],
   "exclude": ["node_modules/@types/mapbox__point-geometry"],
