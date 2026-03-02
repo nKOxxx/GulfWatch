@@ -336,8 +336,10 @@ class TwitterIngestion:
                 
                 response = httpx.get(user_url, headers=headers, timeout=30.0)
                 if response.status_code != 200:
-                    print(f"   ⚠️ Could not get user ID for @{handle}")
+                    error_msg = response.json().get('detail', response.text) if response.text else f"HTTP {response.status_code}"
+                    print(f"   ⚠️ Could not get user ID for @{handle}: {error_msg}")
                     total_errors += 1
+                    results_by_handle[handle] = {"error": f"User lookup failed: {error_msg}"}
                     continue
                 
                 user_id = response.json()['data']['id']
@@ -353,8 +355,10 @@ class TwitterIngestion:
                 tweets_response = httpx.get(tweets_url, headers=headers, params=params, timeout=30.0)
                 
                 if tweets_response.status_code != 200:
-                    print(f"   ⚠️ Error fetching tweets: {tweets_response.status_code}")
+                    error_msg = tweets_response.json().get('detail', tweets_response.text) if tweets_response.text else f"HTTP {tweets_response.status_code}"
+                    print(f"   ⚠️ Error fetching tweets: {error_msg}")
                     total_errors += 1
+                    results_by_handle[handle] = {"error": f"Tweet fetch failed: {error_msg}"}
                     continue
                 
                 tweets_data = tweets_response.json()
@@ -376,9 +380,11 @@ class TwitterIngestion:
                 }
                 
             except Exception as e:
+                import traceback
+                error_detail = f"{str(e)}\n{traceback.format_exc()}"
                 print(f"   ❌ Error processing @{handle}: {e}")
                 total_errors += 1
-                results_by_handle[handle] = {"error": str(e)}
+                results_by_handle[handle] = {"error": str(e), "detail": error_detail[:200]}
         
         summary = {
             "status": "success",
