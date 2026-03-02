@@ -80,7 +80,7 @@ class Incident(Base):
     
     # Location
     location_name = Column(String(200), nullable=False)
-    location = Column(Geography('POINT', srid=4326), nullable=False)
+    location = Column(Geography('POINT', srid=4326), nullable=True)
     location_accuracy_meters = Column(Integer, default=100)
     region = Column(String(100))
     country = Column(String(100))

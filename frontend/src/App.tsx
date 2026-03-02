@@ -11,8 +11,8 @@ interface Incident {
   event_type: string
   location_name: string
   country?: string
-  lat: number
-  lng: number
+  lat?: number
+  lng?: number
   description?: string
   detected_at: string
   // Source info
@@ -77,8 +77,10 @@ function App() {
     markersRef.current.forEach(marker => marker.remove())
     markersRef.current = []
 
-    // Add new markers
-    incidents.forEach(inc => {
+    // Add new markers (only for incidents with coordinates)
+    const incidentsWithLocation = incidents.filter(inc => inc.lat && inc.lng)
+    
+    incidentsWithLocation.forEach(inc => {
       const color = inc.status === 'CONFIRMED' ? '#ef4444' : 
                     inc.status === 'LIKELY' ? '#f59e0b' : '#22c55e'
       
@@ -94,16 +96,16 @@ function App() {
         iconAnchor: [10, 10]
       })
 
-      const marker = L.marker([inc.lat, inc.lng], { icon })
+      const marker = L.marker([inc.lat!, inc.lng!], { icon })
         .addTo(mapRef.current!)
         .on('click', () => setSelected(inc))
 
       markersRef.current.push(marker)
     })
 
-    // Fit bounds if we have incidents
-    if (incidents.length > 0) {
-      const bounds = L.latLngBounds(incidents.map(i => [i.lat, i.lng]))
+    // Fit bounds if we have incidents with location
+    if (incidentsWithLocation.length > 0) {
+      const bounds = L.latLngBounds(incidentsWithLocation.map(i => [i.lat!, i.lng!]))
       mapRef.current.fitBounds(bounds, { padding: [50, 50] })
     }
   }, [incidents])
@@ -163,7 +165,7 @@ function App() {
                   className={`feed-item ${inc.status.toLowerCase()} ${selected?.id === inc.id ? 'active' : ''}`}
                   onClick={() => {
                     setSelected(inc)
-                    if (mapRef.current) {
+                    if (mapRef.current && inc.lat && inc.lng) {
                       mapRef.current.setView([inc.lat, inc.lng], 10)
                     }
                   }}
@@ -197,9 +199,11 @@ function App() {
             </div>
             <h2>{selected.event_type}</h2>
             <p className="modal-location">📍 {selected.location_name} {selected.country && <span className="modal-country">({selected.country})</span>}</p>
-            <p className="modal-coords">
-              {selected.lat.toFixed(4)}°N, {selected.lng.toFixed(4)}°E
-            </p>
+            {selected.lat && selected.lng && (
+              <p className="modal-coords">
+                {selected.lat.toFixed(4)}°N, {selected.lng.toFixed(4)}°E
+              </p>
+            )}
             {selected.description && (
               <p className="modal-desc">{selected.description}</p>
             )}
