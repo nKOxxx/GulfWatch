@@ -1,6 +1,6 @@
 """
 Twitter/X API Integration for Gulf Watch
-Monitors official UAE sources and creates incidents
+Monitors official Gulf sources and creates incidents
 """
 
 import os
@@ -24,12 +24,12 @@ TWITTER_API_KEY = os.getenv('TWITTER_API_KEY')
 TWITTER_API_SECRET = os.getenv('TWITTER_API_SECRET')
 
 class TwitterIngestion:
-    """Ingest tweets from official UAE sources"""
+    """Ingest tweets from official Gulf sources"""
     
     BASE_URL = "https://api.twitter.com/2"
     
     # UAE Official handles to monitor
-    MONITORED_HANDLES = [
+    UAE_HANDLES = [
         'WAMnews',          # WAM News Agency
         'uae_cd',           # UAE Civil Defense
         'moiuae',           # Ministry of Interior
@@ -40,6 +40,32 @@ class TwitterIngestion:
         'mohamedbinzayed',  # President MBZ
         'hhshkmohd',        # Dubai Ruler MBR
     ]
+    
+    # Saudi Arabia Official handles
+    SAUDI_HANDLES = [
+        'SaudiMOI',         # Saudi Ministry of Interior
+        'SaudiNews50',      # Saudi News 50 (official news)
+        'SPAregions',       # Saudi Press Agency - Regions
+        'spagov',           # Saudi Press Agency
+        'MODA Saudi',       # Ministry of Defense
+    ]
+    
+    # Qatar Official handles
+    QATAR_HANDLES = [
+        'MOIQatar',         # Qatar Ministry of Interior
+        'QatarNewsAgency',  # Qatar News Agency
+        'qatarembassy',     # Qatar Embassy
+    ]
+    
+    # Bahrain Official handles
+    BAHRAIN_HANDLES = [
+        'BahrainNews',      # Bahrain News Agency
+        'InteriorMinistry', # Bahrain Interior Ministry
+        'bahrainpolice',    # Bahrain Police
+    ]
+    
+    # Combined list for monitoring
+    MONITORED_HANDLES = UAE_HANDLES + SAUDI_HANDLES + QATAR_HANDLES + BAHRAIN_HANDLES
     
     # Keywords that indicate threats/incidents
     THREAT_KEYWORDS = [
@@ -172,6 +198,11 @@ class TwitterIngestion:
     def run_ingestion(self):
         """Run full ingestion cycle"""
         print("🔄 Starting Twitter ingestion...")
+        print(f"   Monitoring {len(self.MONITORED_HANDLES)} official accounts")
+        print(f"   - UAE: {len(self.UAE_HANDLES)} accounts")
+        print(f"   - Saudi Arabia: {len(self.SAUDI_HANDLES)} accounts")
+        print(f"   - Qatar: {len(self.QATAR_HANDLES)} accounts")
+        print(f"   - Bahrain: {len(self.BAHRAIN_HANDLES)} accounts")
         
         total_reports = 0
         
@@ -283,3 +314,10 @@ if __name__ == "__main__":
             print(f"  - [{i.status}] {i.event_type}: {i.location_name}")
     else:
         print("\n📍 No active incidents")
+    
+    # Show monitored accounts
+    print("\n📡 Monitored Accounts:")
+    print("  UAE:", ', '.join(ingestion.UAE_HANDLES))
+    print("  Saudi Arabia:", ', '.join(ingestion.SAUDI_HANDLES))
+    print("  Qatar:", ', '.join(ingestion.QATAR_HANDLES))
+    print("  Bahrain:", ', '.join(ingestion.BAHRAIN_HANDLES))
