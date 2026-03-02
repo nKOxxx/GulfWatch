@@ -24,6 +24,13 @@ sources:
     credibility: 95
     priority: high
     
+  - name: "Dubai Media Office"
+    platform: twitter
+    handle: "@DXMediaOffice"
+    type: state_media
+    credibility: 95
+    priority: high
+    
   - name: "Abu Dhabi Police"
     platform: twitter
     handle: "@ADPoliceHQ"

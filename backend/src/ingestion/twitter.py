@@ -39,6 +39,7 @@ class TwitterIngestion:
         'ad_policehq',      # Abu Dhabi Police
         'mohamedbinzayed',  # President MBZ
         'hhshkmohd',        # Dubai Ruler MBR
+        'dxmediaoffice',    # Dubai Media Office
     ]
     
     # Saudi Arabia Official handles
