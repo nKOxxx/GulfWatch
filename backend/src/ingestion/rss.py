@@ -76,83 +76,93 @@ class RSSIngestion:
                 return city_name
         return None
     
-    def get_or_create_source(self, feed_info: Dict) -> Source:
+    def get_or_create_source(self, feed_info: Dict) -> Optional[Source]:
         """Get or create source from RSS feed"""
-        handle = f"@{feed_info['name'].lower().replace(' ', '_')}"
-        
-        source = SourceCRUD.get_by_handle(self.db, handle, "rss")
-        
-        if not source:
-            source = Source(
-                name=feed_info['name'],
-                handle=handle,
-                platform="rss",
-                source_type="news_media",
-                credibility_score=feed_info['credibility'],
-                is_official=True if feed_info['credibility'] >= 90 else False,
-                is_verified=True,
-                country=feed_info['country']
-            )
-            self.db.add(source)
-            self.db.commit()
-            self.db.refresh(source)
-            print(f"✅ Created RSS source: {feed_info['name']}")
-        
-        return source
+        try:
+            handle = f"@{feed_info['name'].lower().replace(' ', '_')}"
+            
+            source = SourceCRUD.get_by_handle(self.db, handle, "rss")
+            
+            if not source:
+                source = Source(
+                    name=feed_info['name'],
+                    handle=handle,
+                    platform="rss",
+                    source_type="news_media",
+                    credibility_score=feed_info['credibility'],
+                    is_official=True if feed_info['credibility'] >= 90 else False,
+                    is_verified=True,
+                    country=feed_info['country']
+                )
+                self.db.add(source)
+                self.db.commit()
+                self.db.refresh(source)
+                print(f"✅ Created RSS source: {feed_info['name']}")
+            
+            return source
+        except Exception as e:
+            print(f"   ⚠️ Error creating source: {e}")
+            self.db.rollback()
+            return None
     
     def process_feed_item(self, entry, source: Source) -> Optional[RawReport]:
         """Process RSS feed item into raw report"""
-        title = entry.get('title', '')
-        summary = entry.get('summary', '')
-        link = entry.get('link', '')
-        published = entry.get('published_parsed') or entry.get('updated_parsed')
-        
-        full_text = f"{title} {summary}"
-        
-        # Skip if not threat-related
-        if not self.is_threat_related(full_text):
+        try:
+            title = entry.get('title', '')
+            summary = entry.get('summary', '')
+            link = entry.get('link', '')
+            published = entry.get('published_parsed') or entry.get('updated_parsed')
+            
+            full_text = f"{title} {summary}"
+            
+            # Skip if not threat-related
+            if not self.is_threat_related(full_text):
+                return None
+            
+            # Check if already processed
+            existing = self.db.query(RawReport).filter(
+                RawReport.external_id == link
+            ).first()
+            
+            if existing:
+                return None
+            
+            # Parse timestamp
+            if published:
+                posted_at = datetime(*published[:6])
+            else:
+                posted_at = datetime.utcnow()
+            
+            # Extract location
+            location_name = self.extract_location(full_text)
+            
+            # Create raw report
+            raw_report = RawReport(
+                source_id=source.id,
+                external_id=link,
+                content=full_text,
+                posted_at=posted_at,
+                location_text=location_name,
+                source_credibility=source.credibility_score,
+                is_verified_source=source.is_verified,
+                raw_data={
+                    'title': title,
+                    'link': link,
+                    'source_name': source.name
+                },
+                processed=False
+            )
+            
+            self.db.add(raw_report)
+            self.db.commit()
+            self.db.refresh(raw_report)
+            
+            print(f"✅ Created report from {source.name}: {title[:50]}...")
+            return raw_report
+        except Exception as e:
+            print(f"   ⚠️ Error processing feed item: {e}")
+            self.db.rollback()
             return None
-        
-        # Check if already processed
-        existing = self.db.query(RawReport).filter(
-            RawReport.external_id == link
-        ).first()
-        
-        if existing:
-            return None
-        
-        # Parse timestamp
-        if published:
-            posted_at = datetime(*published[:6])
-        else:
-            posted_at = datetime.utcnow()
-        
-        # Extract location
-        location_name = self.extract_location(full_text)
-        
-        # Create raw report
-        raw_report = RawReport(
-            source_id=source.id,
-            external_id=link,
-            content=full_text,
-            posted_at=posted_at,
-            location_text=location_name,
-            source_credibility=source.credibility_score,
-            is_verified_source=source.is_verified,
-            raw_data={
-                'title': title,
-                'link': link,
-                'source_name': source.name
-            },
-            processed=False
-        )
-        
-        self.db.add(raw_report)
-        self.db.commit()
-        self.db.refresh(raw_report)
-        
-        print(f"✅ Created report from {source.name}: {title[:50]}...")
-        return raw_report
     
     def ingest_feed(self, feed_info: Dict) -> int:
         """Ingest single RSS feed"""
@@ -167,27 +177,35 @@ class RSSIngestion:
             
             # Get or create source
             source = self.get_or_create_source(feed_info)
+            if not source:
+                print(f"   ⚠️ Could not create source for {feed_info['name']}")
+                return 0
             
             # Process entries from last 24h
             new_reports = 0
             cutoff = datetime.utcnow() - timedelta(hours=24)
             
             for entry in feed.entries[:20]:  # Process last 20 entries
-                published = entry.get('published_parsed')
-                if published:
-                    entry_time = datetime(*published[:6])
-                    if entry_time < cutoff:
-                        continue
-                
-                report = self.process_feed_item(entry, source)
-                if report:
-                    new_reports += 1
+                try:
+                    published = entry.get('published_parsed')
+                    if published:
+                        entry_time = datetime(*published[:6])
+                        if entry_time < cutoff:
+                            continue
+                    
+                    report = self.process_feed_item(entry, source)
+                    if report:
+                        new_reports += 1
+                except Exception as e:
+                    print(f"   ⚠️ Error processing entry: {e}")
+                    continue
             
             print(f"   Found {new_reports} threat-related articles")
             return new_reports
             
         except Exception as e:
             print(f"   ❌ Error: {e}")
+            self.db.rollback()
             return 0
     
     def run_ingestion(self) -> Dict:
@@ -207,6 +225,7 @@ class RSSIngestion:
             except Exception as e:
                 errors += 1
                 results[feed['name']] = {"error": str(e)}
+                self.db.rollback()  # Ensure transaction is clean after error
         
         summary = {
             "status": "success",

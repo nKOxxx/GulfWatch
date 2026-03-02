@@ -470,57 +470,11 @@ async def ingest_rss(db: Session = Depends(get_db)):
         ingestion = RSSIngestion(db)
         result = ingestion.run_ingestion()
         
-        # Auto-verify any new reports from high-credibility sources
-        from models import RawReportCRUD
-        unprocessed = RawReportCRUD.get_unprocessed(db, limit=100)
-        verified_count = 0
-        
-        for report in unprocessed:
-            # Auto-verify if from high-credibility source (90+)
-            if report.source and report.source.credibility_score >= 90:
-                incident = ingestion.db.query(Incident).filter(
-                    Incident.description == report.content[:200]
-                ).first()
-                
-                if not incident:
-                    from geoalchemy2.elements import WKTElement
-                    from datetime import datetime
-                    
-                    location_name = report.location_text or 'Unknown Location'
-                    country = report.source.country if report.source else 'Unknown'
-                    
-                    incident = Incident(
-                        status='CONFIRMED' if report.source.credibility_score >= 95 else 'LIKELY',
-                        event_type='security_alert',
-                        location_name=location_name,
-                        location=WKTElement('POINT(55.27 25.20)', srid=4326),
-                        description=report.content[:500],
-                        country=country,
-                        detected_at=report.posted_at,
-                        confirmed_at=datetime.utcnow() if report.source.credibility_score >= 95 else None,
-                        reports_count=1,
-                        unique_sources_count=1,
-                        total_credibility=report.source.credibility_score,
-                        is_active=True,
-                        source_handle=report.source.handle if report.source else None,
-                        source_name=report.source.name if report.source else None,
-                        source_platform='rss',
-                        source_url=report.external_id
-                    )
-                    ingestion.db.add(incident)
-                    ingestion.db.commit()
-                    verified_count += 1
-                    
-                    report.linked_incident = incident.id
-                    report.processed = True
-                    ingestion.db.commit()
-        
-        result["auto_verified"] = verified_count
-        result["message"] = f"Ingested {result['total_new_reports']} RSS reports, created {verified_count} incidents"
-        
         return result
     except Exception as e:
         import traceback
+        # Rollback any failed transaction
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"RSS ingestion failed: {str(e)}\n{traceback.format_exc()}")
 
 
