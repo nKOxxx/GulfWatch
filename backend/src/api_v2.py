@@ -12,6 +12,7 @@ from uuid import UUID
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 from geoalchemy2.elements import WKTElement
 
