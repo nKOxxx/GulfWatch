@@ -10,6 +10,7 @@ interface Incident {
   status: 'CONFIRMED' | 'LIKELY' | 'PROBABLE' | 'UNCONFIRMED'
   event_type: string
   location_name: string
+  country?: string
   lat: number
   lng: number
   description?: string
@@ -164,7 +165,7 @@ function App() {
                 >
                   <div className="feed-status">{inc.status}</div>
                   <div className="feed-type">{inc.event_type}</div>
-                  <div className="feed-location">📍 {inc.location_name}</div>
+                  <div className="feed-location">📍 {inc.location_name} {inc.country && <span className="feed-country">• {inc.country}</span>}</div>
                   <div className="feed-time">
                     {new Date(inc.detected_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                   </div>
@@ -184,7 +185,7 @@ function App() {
               <button onClick={() => setSelected(null)}>×</button>
             </div>
             <h2>{selected.event_type}</h2>
-            <p className="modal-location">📍 {selected.location_name}</p>
+            <p className="modal-location">📍 {selected.location_name} {selected.country && <span className="modal-country">({selected.country})</span>}</p>
             <p className="modal-coords">
               {selected.lat.toFixed(4)}°N, {selected.lng.toFixed(4)}°E
             </p>

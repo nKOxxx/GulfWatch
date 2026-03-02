@@ -55,6 +55,7 @@ class IncidentResponse(BaseModel):
     event_type: str
     classification: Optional[str]
     location_name: str
+    country: Optional[str]
     lat: float
     lng: float
     distance_meters: Optional[float]
@@ -245,6 +246,92 @@ async def create_demo_incidents(db: Session = Depends(get_db)):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Demo creation failed: {str(e)}")
+
+
+@app.post("/admin/convert-reports")
+async def convert_pending_reports(db: Session = Depends(get_db)):
+    """Convert all pending reports to verified incidents (admin only)"""
+    try:
+        from geoalchemy2.elements import WKTElement
+        from models import RawReport, Source
+        
+        # Get all unprocessed reports
+        unprocessed = db.query(RawReport).filter(RawReport.processed == False).all()
+        
+        created_incidents = []
+        
+        # Map handles to countries
+        handle_to_country = {
+            'mofaqatar_en': 'Qatar',
+            'moi_qataren': 'Qatar',
+            'qnaenglish': 'Qatar',
+            'saudimoi': 'Saudi Arabia',
+            'saudidcd': 'Saudi Arabia',
+            'sparegions': 'Saudi Arabia',
+            'bahrainnews': 'Bahrain',
+            'moi_bahrain': 'Bahrain',
+            'uae_cd': 'UAE',
+            'wamnews': 'UAE',
+            'dubaipolicehq': 'UAE',
+            'adpolicehq': 'UAE',
+            'moikuwait': 'Kuwait',
+            'kuw_civil_def': 'Kuwait',
+            'kuna_en': 'Kuwait',
+            'idf': 'Israel',
+            'idfhomefront': 'Israel',
+            'ilpolice': 'Israel',
+            'israelipm': 'Israel',
+            'irimfa_en': 'Iran',
+            'irgcofficial': 'Iran',
+            'tasnimnews_en': 'Iran',
+            'presstv': 'Iran'
+        }
+        
+        for report in unprocessed:
+            # Determine country from source handle
+            handle_lower = report.source.handle.lower() if report.source else ''
+            country = handle_to_country.get(handle_lower, 'Unknown')
+            
+            # Determine status based on content
+            content_lower = report.content.lower()
+            if any(word in content_lower for word in ['confirmed', 'intercepted', 'all clear', 'completed']):
+                status = 'CONFIRMED'
+            elif any(word in content_lower for word in ['likely', 'probable', 'monitoring']):
+                status = 'LIKELY'
+            else:
+                status = 'PROBABLE'
+            
+            # Create incident
+            incident = Incident(
+                status=status,
+                event_type='security_alert',
+                location_name=report.location_text or 'Unknown Location',
+                country=country,
+                location=WKTElement(f'POINT({report.location.lng} {report.location.lat})', srid=4326) if report.location else None,
+                description=report.content[:500],
+                guidance='Follow official instructions. Monitor local media.',
+                detected_at=report.posted_at or datetime.utcnow(),
+                reports_count=1,
+                unique_sources_count=1,
+                total_credibility=report.source_credibility or 50,
+                is_active=False,  # Historical
+                media_urls=report.media_urls or []
+            )
+            
+            db.add(incident)
+            report.processed = True
+            created_incidents.append(incident)
+        
+        db.commit()
+        
+        return {
+            "status": "success",
+            "converted": len(created_incidents),
+            "incidents": [{"id": str(i.id), "location": i.location_name, "country": i.country} for i in created_incidents]
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Conversion failed: {str(e)}")
 
 
 @app.get("/admin/historical-data")
@@ -653,6 +740,7 @@ async def get_incidents(
             event_type=i.event_type,
             classification=i.classification,
             location_name=i.location_name,
+            country=i.country,
             lat=result.lat if result else 0,
             lng=result.lng if result else 0,
             distance_meters=None,

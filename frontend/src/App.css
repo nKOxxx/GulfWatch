@@ -265,6 +265,11 @@ body {
   margin-bottom: 4px;
 }
 
+.feed-country {
+  color: #00ff88;
+  font-weight: bold;
+}
+
 .feed-time {
   font-size: 10px;
   color: #666;
@@ -318,6 +323,11 @@ body {
   padding: 0 16px 8px;
   font-size: 14px;
   color: #888;
+}
+
+.modal-country {
+  color: #00ff88;
+  font-weight: bold;
 }
 
 .modal-coords {
