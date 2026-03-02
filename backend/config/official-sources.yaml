@@ -169,34 +169,103 @@ sources:
     credibility: 95
     priority: immediate
     
-  # ==================== IRAN (NEW) ====================
-  - name: "Iran Foreign Ministry"
-    platform: twitter
-    handle: "@IRIMFA_EN"
+  # ==================== INSTAGRAM (6 Countries) ====================
+  # UAE Instagram
+  - name: "UAE Ministry of Interior IG"
+    platform: instagram
+    handle: "@moiuae"
     type: federal_government
-    credibility: 80
+    credibility: 100
+    priority: immediate
+    
+  - name: "UAE Civil Defense IG"
+    platform: instagram
+    handle: "@uae_cd"
+    type: civil_defense
+    credibility: 100
+    priority: immediate
+    
+  - name: "WAM News IG"
+    platform: instagram
+    handle: "@wamnews"
+    type: state_media
+    credibility: 95
     priority: high
     
-  - name: "IRGC Official"
-    platform: twitter
-    handle: "@IRGCofficial"
+  - name: "Dubai Police IG"
+    platform: instagram
+    handle: "@dubaipolicehq"
+    type: police
+    credibility: 95
+    priority: high
+    
+  # Saudi Instagram
+  - name: "Saudi MOI IG"
+    platform: instagram
+    handle: "@saudimoi"
+    type: federal_government
+    credibility: 100
+    priority: immediate
+    
+  - name: "Saudi Civil Defense IG"
+    platform: instagram
+    handle: "@saudi_cd"
+    type: civil_defense
+    credibility: 100
+    priority: immediate
+    
+  # Qatar Instagram
+  - name: "Qatar MOI IG"
+    platform: instagram
+    handle: "@moi_qatar"
+    type: federal_government
+    credibility: 100
+    priority: immediate
+    
+  - name: "Qatar News Agency IG"
+    platform: instagram
+    handle: "@qna.qa"
+    type: state_media
+    credibility: 95
+    priority: high
+    
+  # Bahrain Instagram
+  - name: "Bahrain MOI IG"
+    platform: instagram
+    handle: "@moi_bahrain"
+    type: federal_government
+    credibility: 100
+    priority: immediate
+    
+  # Kuwait Instagram
+  - name: "Kuwait MOI IG"
+    platform: instagram
+    handle: "@moikuwait"
+    type: federal_government
+    credibility: 100
+    priority: immediate
+    
+  - name: "Kuwait Civil Defense IG"
+    platform: instagram
+    handle: "@kuwait_cd"
+    type: civil_defense
+    credibility: 100
+    priority: immediate
+    
+  # Israel Instagram
+  - name: "IDF IG"
+    platform: instagram
+    handle: "@idf"
     type: military
-    credibility: 80
+    credibility: 95
+    priority: immediate
+    
+  - name: "Israel Police IG"
+    platform: instagram
+    handle: "@israelpolice"
+    type: police
+    credibility: 95
     priority: high
-    
-  - name: "Tasnim News Agency"
-    platform: twitter
-    handle: "@Tasnimnews_En"
-    type: state_media
-    credibility: 75
-    priority: medium
-    
-  - name: "Press TV"
-    platform: twitter
-    handle: "@PressTV"
-    type: state_media
-    credibility: 70
-    priority: medium
 
 # Verification rules
 rules:

@@ -311,10 +311,17 @@ async def convert_pending_reports(db: Session = Depends(get_db)):
             'idfhomefront': 'Israel',
             'ilpolice': 'Israel',
             'israelipm': 'Israel',
-            'irimfa_en': 'Iran',
-            'irgcofficial': 'Iran',
-            'tasnimnews_en': 'Iran',
-            'presstv': 'Iran'
+            # Instagram handles (6 countries)
+            'moiuae': 'UAE',
+            'wamnews': 'UAE',
+            'dubaipolicehq': 'UAE',
+            'saudimoi': 'Saudi Arabia',
+            'saudi_cd': 'Saudi Arabia',
+            'moi_qatar': 'Qatar',
+            'qna.qa': 'Qatar',
+            'moikuwait': 'Kuwait',
+            'kuwait_cd': 'Kuwait',
+            'israelpolice': 'Israel'
         }
         
         for report in unprocessed:

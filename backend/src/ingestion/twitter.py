@@ -80,16 +80,29 @@ class TwitterIngestion:
         'IsraeliPM',        # Prime Minister
     ]
     
-    # Iran Official handles
-    IRAN_HANDLES = [
-        'IRIMFA_EN',        # Iran Foreign Ministry
-        'IRGCofficial',     # IRGC
-        'Tasnimnews_En',    # Tasnim News
-        'PressTV',          # Press TV
+    # Instagram Official accounts (6 countries, no Iran)
+    INSTAGRAM_ACCOUNTS = [
+        # UAE
+        {'username': 'moiuae', 'country': 'UAE', 'name': 'UAE Ministry of Interior'},
+        {'username': 'uae_cd', 'country': 'UAE', 'name': 'UAE Civil Defense'},
+        {'username': 'wamnews', 'country': 'UAE', 'name': 'WAM News'},
+        # Saudi
+        {'username': 'saudimoi', 'country': 'Saudi Arabia', 'name': 'Saudi Ministry of Interior'},
+        {'username': 'saudi_cd', 'country': 'Saudi Arabia', 'name': 'Saudi Civil Defense'},
+        # Qatar
+        {'username': 'moi_qatar', 'country': 'Qatar', 'name': 'Qatar Ministry of Interior'},
+        # Bahrain
+        {'username': 'moi_bahrain', 'country': 'Bahrain', 'name': 'Bahrain Ministry of Interior'},
+        # Kuwait
+        {'username': 'moikuwait', 'country': 'Kuwait', 'name': 'Kuwait Ministry of Interior'},
+        {'username': 'kuwait_cd', 'country': 'Kuwait', 'name': 'Kuwait Civil Defense'},
+        # Israel
+        {'username': 'idf', 'country': 'Israel', 'name': 'Israel Defense Forces'},
+        {'username': 'israelpolice', 'country': 'Israel', 'name': 'Israel Police'},
     ]
     
-    # Combined list for monitoring
-    MONITORED_HANDLES = UAE_HANDLES + SAUDI_HANDLES + QATAR_HANDLES + BAHRAIN_HANDLES + KUWAIT_HANDLES + ISRAEL_HANDLES + IRAN_HANDLES
+    # Combined list for monitoring (6 countries, no Iran)
+    MONITORED_HANDLES = UAE_HANDLES + SAUDI_HANDLES + QATAR_HANDLES + BAHRAIN_HANDLES + KUWAIT_HANDLES + ISRAEL_HANDLES
     
     # Keywords that indicate threats/incidents
     THREAT_KEYWORDS = [
