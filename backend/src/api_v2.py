@@ -329,6 +329,11 @@ async def convert_pending_reports(db: Session = Depends(get_db)):
                 except:
                     pass
             
+            # Skip if no location (required field)
+            if not location_geo:
+                print(f"Skipping report {report.id}: no location")
+                continue
+            
             # Create incident
             incident = Incident(
                 status=status,
