@@ -209,42 +209,115 @@ async def reset_database():
 async def fix_database():
     """Emergency fix for broken database state (admin only)"""
     from sqlalchemy import text
-    from models import engine, Base
+    from models import engine
     
     try:
         with engine.connect() as conn:
             conn.execute(text("COMMIT"))
             
-            # Drop all tables with CASCADE
+            # Drop everything
+            conn.execute(text("DROP TABLE IF EXISTS raw_reports CASCADE;"))
+            conn.execute(text("DROP TABLE IF EXISTS verification_logs CASCADE;"))
+            conn.execute(text("DROP TABLE IF EXISTS incidents CASCADE;"))
+            conn.execute(text("DROP TABLE IF EXISTS sources CASCADE;"))
+            conn.execute(text("DROP TABLE IF EXISTS user_subscriptions CASCADE;"))
+            
+            # Create tables with raw SQL
             conn.execute(text("""
-                DROP TABLE IF EXISTS raw_reports CASCADE;
-                DROP TABLE IF EXISTS incidents CASCADE;
-                DROP TABLE IF EXISTS sources CASCADE;
-                DROP TABLE IF EXISTS user_subscriptions CASCADE;
-                DROP TABLE IF EXISTS verification_logs CASCADE;
+                CREATE TABLE sources (
+                    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                    name VARCHAR(200) NOT NULL,
+                    handle VARCHAR(100) UNIQUE NOT NULL,
+                    platform VARCHAR(50) DEFAULT 'twitter',
+                    source_type VARCHAR(50),
+                    credibility_score INTEGER DEFAULT 50,
+                    follower_count INTEGER DEFAULT 0,
+                    is_verified BOOLEAN DEFAULT FALSE,
+                    is_official BOOLEAN DEFAULT FALSE,
+                    country VARCHAR(100),
+                    region VARCHAR(100),
+                    location GEOGRAPHY(POINT,4326),
+                    priority VARCHAR(20) DEFAULT 'medium',
+                    verification_rules JSONB DEFAULT '{}',
+                    last_post_at TIMESTAMP WITH TIME ZONE,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+                );
             """))
             
-            # Drop any remaining indexes
             conn.execute(text("""
-                DROP INDEX IF EXISTS idx_incidents_location;
-                DROP INDEX IF EXISTS idx_incidents_source_handle;
-                DROP INDEX IF EXISTS idx_incidents_status;
-                DROP INDEX IF EXISTS idx_incidents_time;
-                DROP INDEX IF EXISTS idx_incidents_region;
-                DROP INDEX IF EXISTS idx_raw_reports_processed;
-                DROP INDEX IF EXISTS idx_raw_reports_time;
-                DROP INDEX IF EXISTS idx_raw_reports_source;
-                DROP INDEX IF EXISTS idx_verification_logs_incident;
+                CREATE TABLE incidents (
+                    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                    status VARCHAR(20) DEFAULT 'UNCONFIRMED',
+                    event_type VARCHAR(50),
+                    classification VARCHAR(50),
+                    location_name VARCHAR(200),
+                    location GEOGRAPHY(POINT,4326),
+                    location_accuracy_meters INTEGER,
+                    region VARCHAR(100),
+                    country VARCHAR(100),
+                    title VARCHAR(500),
+                    description TEXT,
+                    guidance TEXT,
+                    detected_at TIMESTAMP WITH TIME ZONE NOT NULL,
+                    confirmed_at TIMESTAMP WITH TIME ZONE,
+                    resolved_at TIMESTAMP WITH TIME ZONE,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    reports_count INTEGER DEFAULT 0,
+                    unique_sources_count INTEGER DEFAULT 0,
+                    total_credibility INTEGER DEFAULT 0,
+                    media_urls TEXT[],
+                    source_handle VARCHAR(100),
+                    source_name VARCHAR(200),
+                    source_platform VARCHAR(50) DEFAULT 'twitter',
+                    external_id VARCHAR(100),
+                    source_url TEXT,
+                    verified_by UUID REFERENCES sources(id),
+                    verification_method VARCHAR(50),
+                    is_active BOOLEAN DEFAULT TRUE,
+                    superseded_by UUID REFERENCES incidents(id)
+                );
+            """))
+            
+            conn.execute(text("""
+                CREATE TABLE raw_reports (
+                    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                    source_id UUID REFERENCES sources(id),
+                    external_id VARCHAR(200),
+                    content TEXT NOT NULL,
+                    content_language VARCHAR(10) DEFAULT 'en',
+                    location_text VARCHAR(200),
+                    location GEOGRAPHY(POINT,4326),
+                    location_confidence DECIMAL(3,2),
+                    source_credibility INTEGER DEFAULT 0,
+                    follower_count INTEGER DEFAULT 0,
+                    is_verified_source BOOLEAN DEFAULT FALSE,
+                    media_urls TEXT[],
+                    posted_at TIMESTAMP WITH TIME ZONE NOT NULL,
+                    received_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    processed BOOLEAN DEFAULT FALSE,
+                    linked_incident UUID REFERENCES incidents(id),
+                    processing_metadata JSONB DEFAULT '{}',
+                    raw_data JSONB NOT NULL
+                );
+            """))
+            
+            conn.execute(text("""
+                CREATE INDEX idx_incidents_status ON incidents(status);
+                CREATE INDEX idx_incidents_time ON incidents(detected_at);
+                CREATE INDEX idx_incidents_location ON incidents USING GIST(location);
+                CREATE INDEX idx_incidents_region ON incidents(region, country);
+                CREATE INDEX idx_raw_reports_processed ON raw_reports(processed);
+                CREATE INDEX idx_raw_reports_time ON raw_reports(posted_at);
+                CREATE INDEX idx_raw_reports_source ON raw_reports(source_id);
             """))
             
             conn.commit()
-            
-        # Recreate tables
-        init_database()
         
         return {
             "status": "success",
-            "message": "Database fixed - all tables recreated fresh"
+            "message": "Database rebuilt with raw SQL - all tables fresh"
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database fix failed: {str(e)}")
