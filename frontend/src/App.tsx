@@ -200,7 +200,7 @@ function App() {
 
       {/* Footer */}
       <footer className="tac-footer">
-        <span>UAE • SAUDI • QATAR • BAHRAIN • KUWAIT • OMAN</span>
+        <span>UAE • SAUDI • QATAR • BAHRAIN • KUWAIT • OMAN • ISRAEL • IRAN</span>
         <span className="tac-classified">CONFIDENTIAL</span>
       </footer>
     </div>

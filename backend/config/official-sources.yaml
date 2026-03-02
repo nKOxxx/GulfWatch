@@ -1,0 +1,280 @@
+# Gulf Watch Official Sources Configuration
+# These sources are treated as authoritative for their respective countries
+
+sources:
+  # ==================== UAE ====================
+  - name: "WAM News Agency"
+    platform: twitter
+    handle: "@WAMnews"
+    type: state_media
+    credibility: 95
+    priority: immediate
+    
+  - name: "UAE Civil Defense"
+    platform: twitter
+    handle: "@uae_cd"
+    type: civil_defense
+    credibility: 100
+    priority: immediate
+    
+  - name: "Dubai Police"
+    platform: twitter
+    handle: "@DubaiPoliceHQ"
+    type: police
+    credibility: 95
+    priority: high
+    
+  - name: "Abu Dhabi Police"
+    platform: twitter
+    handle: "@ADPoliceHQ"
+    type: police
+    credibility: 95
+    priority: high
+    
+  - name: "HH Sheikh Mohammed"
+    platform: twitter
+    handle: "@HHShkMohd"
+    type: ruler
+    credibility: 100
+    priority: immediate
+    
+  - name: "HH Sheikh Mohamed bin Zayed"
+    platform: twitter
+    handle: "@MohamedBinZayed"
+    type: ruler
+    credibility: 100
+    priority: immediate
+    
+  # ==================== Saudi Arabia ====================
+  - name: "Saudi Ministry of Interior"
+    platform: twitter
+    handle: "@SaudiMOI"
+    type: federal_government
+    credibility: 100
+    priority: immediate
+    
+  - name: "Saudi Civil Defense"
+    platform: twitter
+    handle: "@SaudiDCD"
+    type: civil_defense
+    credibility: 100
+    priority: immediate
+    
+  - name: "SPA News Agency"
+    platform: twitter
+    handle: "@SPAregions"
+    type: state_media
+    credibility: 95
+    priority: high
+    
+  # ==================== Qatar ====================
+  - name: "Qatar Ministry of Interior"
+    platform: twitter
+    handle: "@MOI_QatarEn"
+    type: federal_government
+    credibility: 100
+    priority: immediate
+    
+  - name: "Qatar News Agency"
+    platform: twitter
+    handle: "@QNAEnglish"
+    type: state_media
+    credibility: 95
+    priority: high
+    
+  - name: "Qatar Ministry of Foreign Affairs"
+    platform: twitter
+    handle: "@MofaQatar_EN"
+    type: federal_government
+    credibility: 100
+    priority: immediate
+    
+  # ==================== Bahrain ====================
+  - name: "Bahrain Ministry of Interior"
+    platform: twitter
+    handle: "@moi_bahrain"
+    type: federal_government
+    credibility: 100
+    priority: immediate
+    
+  - name: "Bahrain News Agency"
+    platform: twitter
+    handle: "@BahrainNews"
+    type: state_media
+    credibility: 95
+    priority: high
+    
+  # ==================== KUWAIT (NEW) ====================
+  - name: "Kuwait Ministry of Interior"
+    platform: twitter
+    handle: "@MOIKuwait"
+    type: federal_government
+    credibility: 100
+    priority: immediate
+    
+  - name: "Kuwait Civil Defense"
+    platform: twitter
+    handle: "@Kuw_civil_def"
+    type: civil_defense
+    credibility: 100
+    priority: immediate
+    
+  - name: "Kuwait News Agency"
+    platform: twitter
+    handle: "@KUNA_en"
+    type: state_media
+    credibility: 95
+    priority: high
+    
+  - name: "Kuwait Army"
+    platform: twitter
+    handle: "@KuwaitArmy"
+    type: military
+    credibility: 95
+    priority: high
+    
+  # ==================== ISRAEL (NEW) ====================
+  - name: "Israel Defense Forces"
+    platform: twitter
+    handle: "@IDF"
+    type: military
+    credibility: 95
+    priority: immediate
+    
+  - name: "Israel Home Front Command"
+    platform: twitter
+    handle: "@IDFhomefront"
+    type: civil_defense
+    credibility: 100
+    priority: immediate
+    
+  - name: "Israel Police"
+    platform: twitter
+    handle: "@ILPolice"
+    type: police
+    credibility: 95
+    priority: high
+    
+  - name: "Israel Prime Minister"
+    platform: twitter
+    handle: "@IsraeliPM"
+    type: federal_government
+    credibility: 95
+    priority: immediate
+    
+  # ==================== IRAN (NEW) ====================
+  - name: "Iran Foreign Ministry"
+    platform: twitter
+    handle: "@IRIMFA_EN"
+    type: federal_government
+    credibility: 80
+    priority: high
+    
+  - name: "IRGC Official"
+    platform: twitter
+    handle: "@IRGCofficial"
+    type: military
+    credibility: 80
+    priority: high
+    
+  - name: "Tasnim News Agency"
+    platform: twitter
+    handle: "@Tasnimnews_En"
+    type: state_media
+    credibility: 75
+    priority: medium
+    
+  - name: "Press TV"
+    platform: twitter
+    handle: "@PressTV"
+    type: state_media
+    credibility: 70
+    priority: medium
+
+# Verification rules
+rules:
+  single_source_trusted:
+    # These source types are trusted as single source of truth
+    - type: ruler
+      min_credibility: 95
+      auto_verify: true
+    - type: federal_government
+      min_credibility: 95
+      auto_verify: true
+    - type: civil_defense
+      min_credibility: 95
+      auto_verify: true
+    - type: emergency_management
+      min_credibility: 90
+      auto_verify: true
+      
+  require_multiple:
+    # These require corroboration even if official
+    - type: state_media
+      min_sources: 2
+      time_window_minutes: 30
+    - type: police
+      min_sources: 2
+      time_window_minutes: 60
+    - type: military
+      min_sources: 2
+      time_window_minutes: 30
+      
+  auto_verify_keywords:
+    # Keywords that trigger immediate verification
+    high_confidence:
+      - "air defense"
+      - "interception"
+      - "ballistic missile"
+      - "drone"
+      - "explosion confirmed"
+      - "shelter in place"
+      - "emergency alert"
+    
+    low_confidence:
+      - "rumors"
+      - "unconfirmed"
+      - "allegedly"
+      - "reports of"
+
+# Priority levels for incident escalation
+priority:
+  immediate:
+    description: "Immediate action required"
+    response_time_minutes: 5
+    notification_channels: [push, sms, email]
+    
+  high:
+    description: "High priority"
+    response_time_minutes: 15
+    notification_channels: [push, email]
+    
+  medium:
+    description: "Medium priority"
+    response_time_minutes: 60
+    notification_channels: [push]
+    
+  low:
+    description: "Low priority"
+    response_time_minutes: 240
+    notification_channels: [email]
+
+# Geographical coverage
+coverage:
+  countries:
+    - UAE
+    - Saudi Arabia
+    - Qatar
+    - Bahrain
+    - Kuwait        # NEW
+    - Israel        # NEW
+    - Iran          # NEW
+    - Oman
+    - Jordan
+    - Iraq
+    
+  primary_regions:
+    - "Gulf Cooperation Council"
+    - "Eastern Mediterranean"
+    - "Strait of Hormuz"
+    - "Arabian Gulf"
