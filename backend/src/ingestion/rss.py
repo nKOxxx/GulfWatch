@@ -251,3 +251,79 @@ class RSSIngestion:
     def backfill_last_24h(self) -> Dict:
         """Backfill last 24 hours from RSS feeds"""
         return self.run_ingestion()
+    
+    def backfill_last_72h(self) -> Dict:
+        """Backfill last 72 hours from RSS feeds"""
+        from datetime import timedelta
+        
+        print("🔄 Starting RSS News Ingestion (72h)")
+        print("=" * 50)
+        
+        total_new = 0
+        errors = 0
+        results = {}
+        cutoff = datetime.utcnow() - timedelta(hours=72)
+        
+        for feed in self.NEWS_FEEDS:
+            feed_name = feed['name']
+            try:
+                print(f"\n📡 Fetching {feed_name}...")
+                
+                # Parse feed
+                import feedparser
+                feed_data = feedparser.parse(feed['url'])
+                
+                if hasattr(feed_data, 'bozo_exception'):
+                    print(f"   ⚠️ Feed warning: {feed_data.bozo_exception}")
+                
+                # Get or create source
+                source = self.get_or_create_source(feed)
+                if not source:
+                    print(f"   ⚠️ Could not create source for {feed_name}")
+                    continue
+                
+                # Process entries from last 72h
+                new_reports = 0
+                
+                for entry in feed_data.entries[:50]:  # Process last 50 entries
+                    try:
+                        published = entry.get('published_parsed')
+                        if published:
+                            entry_time = datetime(*published[:6])
+                            if entry_time < cutoff:
+                                continue
+                        
+                        report = self.process_feed_item(entry, source)
+                        if report:
+                            new_reports += 1
+                    except Exception as e:
+                        continue
+                
+                print(f"   Found {new_reports} threat-related articles")
+                total_new += new_reports
+                results[feed_name] = {"new_reports": new_reports}
+                
+            except Exception as e:
+                errors += 1
+                error_msg = str(e)
+                results[feed_name] = {"error": error_msg}
+                print(f"   ❌ Feed {feed_name} failed: {error_msg}")
+                try:
+                    self.db.rollback()
+                except:
+                    pass
+        
+        summary = {
+            "status": "success",
+            "hours_back": 72,
+            "total_new_reports": total_new,
+            "errors": errors,
+            "feeds_checked": len(self.NEWS_FEEDS),
+            "by_feed": results
+        }
+        
+        print(f"\n✅ RSS 72h Ingestion complete!")
+        print(f"   Total new reports: {total_new}")
+        print(f"   Errors: {errors}")
+        
+        return summary

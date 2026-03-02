@@ -480,6 +480,26 @@ async def ingest_rss():
         db.close()
 
 
+@app.get("/admin/backfill-72h")
+@app.post("/admin/backfill-72h")
+async def backfill_72h():
+    """Backfill last 72 hours from RSS feeds (admin only)"""
+    from ingestion.rss import RSSIngestion
+    from models import get_db
+    
+    db = next(get_db())
+    try:
+        ingestion = RSSIngestion(db)
+        result = ingestion.backfill_last_72h()
+        return result
+    except Exception as e:
+        import traceback
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"72h backfill failed: {str(e)}\n{traceback.format_exc()}")
+    finally:
+        db.close()
+
+
 @app.get("/admin/clear-demo-data")
 @app.post("/admin/clear-demo-data")
 async def clear_demo_data(db: Session = Depends(get_db)):
