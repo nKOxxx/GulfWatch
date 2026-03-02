@@ -632,10 +632,11 @@ async def root(db: Session = Depends(get_db)):
 async def get_incidents(
     limit: int = Query(50, ge=1, le=200),
     min_status: str = Query("PROBABLE", enum=["UNCONFIRMED", "PROBABLE", "LIKELY", "CONFIRMED"]),
+    hours: int = Query(72, ge=1, le=168, description="Show incidents from last N hours"),
     db: Session = Depends(get_db)
 ):
-    """Get all active incidents"""
-    incidents = IncidentCRUD.get_active(db, limit=limit)
+    """Get all incidents from last 72 hours (active + recent for reference)"""
+    incidents = IncidentCRUD.get_recent(db, hours=hours, limit=limit)
     
     # Convert to response format
     response = []

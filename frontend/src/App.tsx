@@ -124,11 +124,11 @@ function App() {
       {/* Status Bar */}
       <div className="tac-status">
         <div className="tac-indicator pulse-red" />
-        <span className="tac-active">SYSTEM ACTIVE</span>
+        <span className="tac-active">72H INTELLIGENCE</span>
         <div className="tac-stats">
           <span className="stat-red">{confirmed.length} Confirmed</span>
           <span className="stat-amber">{probable.length} Probable</span>
-          <span className="stat-green">{incidents.filter(i => i.status === 'UNCONFIRMED').length} Watch</span>
+          <span className="stat-green">{incidents.length} Total Events</span>
         </div>
       </div>
 

@@ -295,6 +295,16 @@ class IncidentCRUD:
         ).order_by(Incident.detected_at.desc()).limit(limit).all()
     
     @staticmethod
+    def get_recent(db: Session, hours: int = 72, limit: int = 200) -> List[Incident]:
+        """Get all incidents from last N hours (for display)"""
+        from datetime import datetime, timedelta
+        cutoff = datetime.utcnow() - timedelta(hours=hours)
+        return db.query(Incident).filter(
+            Incident.detected_at >= cutoff,
+            Incident.status.notin_(['FALSE_ALARM', 'RESOLVED'])
+        ).order_by(Incident.detected_at.desc()).limit(limit).all()
+    
+    @staticmethod
     def get_by_id(db: Session, incident_id: UUID) -> Optional[Incident]:
         """Get incident by ID"""
         return db.query(Incident).filter(Incident.id == incident_id).first()
