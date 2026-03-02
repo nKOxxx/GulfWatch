@@ -165,6 +165,30 @@ async def initialize_database():
         raise HTTPException(status_code=500, detail=f"Database initialization failed: {str(e)}")
 
 
+@app.post("/admin/reset-db")
+async def reset_database():
+    """Reset database - drop and recreate all tables (admin only)"""
+    from sqlalchemy import text
+    from models import engine, Base
+    
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("COMMIT"))  # Close any open transaction
+            # Drop all tables
+            Base.metadata.drop_all(bind=conn)
+            conn.commit()
+            
+        # Recreate tables
+        init_database()
+        
+        return {
+            "status": "success",
+            "message": "Database reset complete - all tables recreated"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database reset failed: {str(e)}")
+
+
 @app.get("/admin/ingest-twitter")
 @app.post("/admin/ingest-twitter")
 async def ingest_twitter(db: Session = Depends(get_db)):
