@@ -307,10 +307,27 @@ async def convert_pending_reports(db: Session = Depends(get_db)):
             else:
                 status = 'PROBABLE'
             
+            # Get platform from source
+            platform = report.source.platform if report.source else 'twitter'
+            
             # Build source URL
             source_url = None
-            if report.external_id and report.source_platform == 'twitter':
+            if report.external_id and platform == 'twitter':
                 source_url = f"https://x.com/{report.source.handle}/status/{report.external_id}"
+            
+            # Build location geography if coordinates exist
+            location_geo = None
+            if report.location:
+                # Extract coordinates from geography
+                try:
+                    result = db.execute(
+                        text("SELECT ST_X(:loc::GEOMETRY) as lng, ST_Y(:loc::GEOMETRY) as lat"),
+                        {'loc': report.location}
+                    ).first()
+                    if result:
+                        location_geo = WKTElement(f'POINT({result.lng} {result.lat})', srid=4326)
+                except:
+                    pass
             
             # Create incident
             incident = Incident(
@@ -318,7 +335,7 @@ async def convert_pending_reports(db: Session = Depends(get_db)):
                 event_type='security_alert',
                 location_name=report.location_text or 'Unknown Location',
                 country=country,
-                location=WKTElement(f'POINT({report.location.lng} {report.location.lat})', srid=4326) if report.location else None,
+                location=location_geo,
                 description=report.content[:500],
                 guidance='Follow official instructions. Monitor local media.',
                 detected_at=report.posted_at or datetime.utcnow(),
@@ -330,7 +347,7 @@ async def convert_pending_reports(db: Session = Depends(get_db)):
                 # Source info
                 source_handle=report.source.handle if report.source else None,
                 source_name=report.source.name if report.source else None,
-                source_platform=report.source_platform,
+                source_platform=platform,
                 external_id=report.external_id,
                 source_url=source_url
             )
