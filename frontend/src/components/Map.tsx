@@ -1,6 +1,18 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { Incident, UserLocation } from '../App';
 
+// Type for Mapbox events
+interface ViewStateChangeEvent {
+  viewState: {
+    longitude: number;
+    latitude: number;
+    zoom: number;
+    bearing?: number;
+    pitch?: number;
+    padding?: any;
+  };
+}
+
 // Try to import Mapbox, fallback to Leaflet if it fails
 let MapboxMap: any = null;
 let MapboxMarker: any = null;
@@ -349,7 +361,7 @@ function MapboxMapComponent({
     <div className="tactical-map-container" style={{ width: '100%', height: '100%', position: 'relative' }}>
       <MapboxMap
         {...viewState}
-        onMove={(evt: { viewState: any }) => setViewState(evt.viewState)}
+        onMove={(evt: ViewStateChangeEvent) => setViewState(evt.viewState)}
         mapStyle="mapbox://styles/mapbox/dark-v11"
         mapboxAccessToken={MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%', minHeight: '400px' }}
