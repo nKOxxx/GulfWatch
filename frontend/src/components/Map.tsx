@@ -349,7 +349,7 @@ function MapboxMapComponent({
     <div className="tactical-map-container" style={{ width: '100%', height: '100%', position: 'relative' }}>
       <MapboxMap
         {...viewState}
-        onMove={evt => setViewState(evt.viewState)}
+        onMove={(evt: { viewState: any }) => setViewState(evt.viewState)}
         mapStyle="mapbox://styles/mapbox/dark-v11"
         mapboxAccessToken={MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%', minHeight: '400px' }}
