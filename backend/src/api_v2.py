@@ -204,6 +204,45 @@ async def reset_database():
         raise HTTPException(status_code=500, detail=f"Database reset failed: {str(e)}")
 
 
+@app.get("/admin/fix-db")
+@app.post("/admin/fix-db")
+async def fix_database():
+    """Emergency fix for broken database state (admin only)"""
+    from sqlalchemy import text
+    from models import engine, Base
+    
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("COMMIT"))
+            
+            # Drop all tables with CASCADE
+            conn.execute(text("""
+                DROP TABLE IF EXISTS raw_reports CASCADE;
+                DROP TABLE IF EXISTS incidents CASCADE;
+                DROP TABLE IF EXISTS sources CASCADE;
+                DROP TABLE IF EXISTS user_subscriptions CASCADE;
+            """))
+            
+            # Drop any remaining indexes
+            conn.execute(text("""
+                DROP INDEX IF EXISTS idx_incidents_location;
+                DROP INDEX IF EXISTS idx_incidents_source_handle;
+                DROP INDEX IF EXISTS idx_raw_reports_processed;
+            """))
+            
+            conn.commit()
+            
+        # Recreate tables
+        init_database()
+        
+        return {
+            "status": "success",
+            "message": "Database fixed - all tables recreated fresh"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database fix failed: {str(e)}")
+
+
 @app.get("/admin/health")
 async def health_check():
     """Detailed health check with diagnostics"""
