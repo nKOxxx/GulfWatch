@@ -127,14 +127,9 @@ body {
 
 /* Leaflet Dark Theme Overrides - Full Screen */
 .leaflet-container {
-  background: #000000 !important;
+  background: #0d1b2a !important;
   width: 100% !important;
   height: 100% !important;
-}
-
-/* Stamen Toner tiles - grayscale land, black water */
-.leaflet-tile {
-  filter: contrast(1.1) brightness(0.9) !important;
 }
 
 /* Remove any default margins/padding from Leaflet */
