@@ -5,7 +5,7 @@ uvicorn[standard]>=0.24.0
 # Database
 sqlalchemy>=2.0.0
 psycopg2-binary>=2.9.9
-geoalchemy2>=0.14.0
+geoalchemy2[shapely]>=0.14.0
 
 # Async support (for WebSocket later)
 websockets>=12.0
