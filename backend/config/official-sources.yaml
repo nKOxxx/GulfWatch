@@ -45,6 +45,13 @@ sources:
     credibility: 100
     priority: immediate
     
+  - name: "UAE Ministry of Interior"
+    platform: twitter
+    handle: "@moiuae"
+    type: federal_government
+    credibility: 100
+    priority: immediate
+    
   # ==================== Saudi Arabia ====================
   - name: "Saudi Ministry of Interior"
     platform: twitter

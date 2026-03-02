@@ -274,6 +274,7 @@ async def convert_pending_reports(db: Session = Depends(get_db)):
             'wamnews': 'UAE',
             'dubaipolicehq': 'UAE',
             'adpolicehq': 'UAE',
+            'moiuae': 'UAE',
             'moikuwait': 'Kuwait',
             'kuw_civil_def': 'Kuwait',
             'kuna_en': 'Kuwait',
