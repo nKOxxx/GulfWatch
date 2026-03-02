@@ -159,6 +159,11 @@ async def initialize_database():
             conn.execute(text("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"))
             conn.commit()
             
+            # Drop conflicting indexes if they exist
+            conn.execute(text("DROP INDEX IF EXISTS idx_incidents_location;"))
+            conn.execute(text("DROP INDEX IF EXISTS idx_incidents_source_handle;"))
+            conn.commit()
+            
             # Verify
             result = conn.execute(text("SELECT PostGIS_Version();"))
             version = result.scalar()
