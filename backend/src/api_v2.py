@@ -158,6 +158,7 @@ async def initialize_database():
         raise HTTPException(status_code=500, detail=f"Database initialization failed: {str(e)}")
 
 
+@app.get("/admin/ingest-twitter")
 @app.post("/admin/ingest-twitter")
 async def ingest_twitter(db: Session = Depends(get_db)):
     """Manually trigger Twitter ingestion (admin only)"""
