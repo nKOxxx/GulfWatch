@@ -462,20 +462,22 @@ async def backfill_24h(db: Session = Depends(get_db)):
 
 @app.get("/admin/ingest-rss")
 @app.post("/admin/ingest-rss")
-async def ingest_rss(db: Session = Depends(get_db)):
+async def ingest_rss():
     """Ingest from RSS news feeds - no API limits (admin only)"""
+    from ingestion.rss import RSSIngestion
+    from models import get_db
+    
+    db = next(get_db())
     try:
-        from ingestion.rss import RSSIngestion
-        
         ingestion = RSSIngestion(db)
         result = ingestion.run_ingestion()
-        
         return result
     except Exception as e:
         import traceback
-        # Rollback any failed transaction
         db.rollback()
         raise HTTPException(status_code=500, detail=f"RSS ingestion failed: {str(e)}\n{traceback.format_exc()}")
+    finally:
+        db.close()
 
 
 @app.get("/admin/clear-demo-data")

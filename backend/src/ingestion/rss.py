@@ -218,14 +218,21 @@ class RSSIngestion:
         results = {}
         
         for feed in self.NEWS_FEEDS:
+            feed_name = feed['name']
             try:
                 count = self.ingest_feed(feed)
                 total_new += count
-                results[feed['name']] = {"new_reports": count}
+                results[feed_name] = {"new_reports": count}
             except Exception as e:
                 errors += 1
-                results[feed['name']] = {"error": str(e)}
-                self.db.rollback()  # Ensure transaction is clean after error
+                error_msg = str(e)
+                results[feed_name] = {"error": error_msg}
+                print(f"   ❌ Feed {feed_name} failed: {error_msg}")
+                # Ensure transaction is clean after error
+                try:
+                    self.db.rollback()
+                except:
+                    pass
         
         summary = {
             "status": "success",
