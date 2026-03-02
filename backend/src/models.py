@@ -105,6 +105,13 @@ class Incident(Base):
     # Media
     media_urls = Column(ARRAY(Text), default=[])
     
+    # Source info (for linking to original post)
+    source_handle = Column(String(100))
+    source_name = Column(String(200))
+    source_platform = Column(String(50), default='twitter')
+    external_id = Column(String(100))
+    source_url = Column(Text)
+    
     # Verification
     verified_by = Column(PGUUID(as_uuid=True), ForeignKey('sources.id'))
     verification_method = Column(String(50))

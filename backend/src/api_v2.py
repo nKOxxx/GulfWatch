@@ -65,6 +65,11 @@ class IncidentResponse(BaseModel):
     reports_count: int
     unique_sources_count: int
     media_urls: List[str]
+    # Source info
+    source_name: Optional[str]
+    source_handle: Optional[str]
+    source_platform: Optional[str]
+    source_url: Optional[str]
     
     class Config:
         from_attributes = True
@@ -302,6 +307,11 @@ async def convert_pending_reports(db: Session = Depends(get_db)):
             else:
                 status = 'PROBABLE'
             
+            # Build source URL
+            source_url = None
+            if report.external_id and report.source_platform == 'twitter':
+                source_url = f"https://x.com/{report.source.handle}/status/{report.external_id}"
+            
             # Create incident
             incident = Incident(
                 status=status,
@@ -316,7 +326,13 @@ async def convert_pending_reports(db: Session = Depends(get_db)):
                 unique_sources_count=1,
                 total_credibility=report.source_credibility or 50,
                 is_active=False,  # Historical
-                media_urls=report.media_urls or []
+                media_urls=report.media_urls or [],
+                # Source info
+                source_handle=report.source.handle if report.source else None,
+                source_name=report.source.name if report.source else None,
+                source_platform=report.source_platform,
+                external_id=report.external_id,
+                source_url=source_url
             )
             
             db.add(incident)
@@ -735,6 +751,11 @@ async def get_incidents(
             {'id': i.id}
         ).first()
         
+        # Build source URL if we have external_id
+        source_url = i.source_url
+        if not source_url and i.external_id and i.source_platform == 'twitter':
+            source_url = f"https://x.com/{i.source_handle}/status/{i.external_id}"
+        
         response.append(IncidentResponse(
             id=str(i.id),
             status=i.status,
@@ -750,7 +771,11 @@ async def get_incidents(
             detected_at=i.detected_at,
             reports_count=i.reports_count,
             unique_sources_count=i.unique_sources_count,
-            media_urls=i.media_urls or []
+            media_urls=i.media_urls or [],
+            source_name=i.source_name,
+            source_handle=i.source_handle,
+            source_platform=i.source_platform,
+            source_url=source_url
         ))
     
     return response

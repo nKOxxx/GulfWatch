@@ -15,6 +15,11 @@ interface Incident {
   lng: number
   description?: string
   detected_at: string
+  // Source info
+  source_name?: string
+  source_handle?: string
+  source_platform?: string
+  source_url?: string
 }
 
 function App() {
@@ -166,6 +171,12 @@ function App() {
                   <div className="feed-status">{inc.status}</div>
                   <div className="feed-type">{inc.event_type}</div>
                   <div className="feed-location">📍 {inc.location_name} {inc.country && <span className="feed-country">• {inc.country}</span>}</div>
+                  {inc.source_handle && (
+                    <div className="feed-source">
+                      Source: {inc.source_name || inc.source_handle}
+                      {inc.source_url && <a href={inc.source_url} target="_blank" rel="noopener noreferrer" className="feed-link">🔗</a>}
+                    </div>
+                  )}
                   <div className="feed-time">
                     {new Date(inc.detected_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                   </div>
@@ -191,6 +202,16 @@ function App() {
             </p>
             {selected.description && (
               <p className="modal-desc">{selected.description}</p>
+            )}
+            {selected.source_handle && (
+              <div className="modal-source">
+                <strong>Source:</strong> {selected.source_name || selected.source_handle}
+                {selected.source_url && (
+                  <a href={selected.source_url} target="_blank" rel="noopener noreferrer" className="modal-link">
+                    View Original Post →
+                  </a>
+                )}
+              </div>
             )}
             <div className="modal-time">
               Detected: {new Date(selected.detected_at).toLocaleString()}
