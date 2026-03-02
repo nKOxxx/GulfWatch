@@ -221,13 +221,20 @@ async def fix_database():
                 DROP TABLE IF EXISTS incidents CASCADE;
                 DROP TABLE IF EXISTS sources CASCADE;
                 DROP TABLE IF EXISTS user_subscriptions CASCADE;
+                DROP TABLE IF EXISTS verification_logs CASCADE;
             """))
             
             # Drop any remaining indexes
             conn.execute(text("""
                 DROP INDEX IF EXISTS idx_incidents_location;
                 DROP INDEX IF EXISTS idx_incidents_source_handle;
+                DROP INDEX IF EXISTS idx_incidents_status;
+                DROP INDEX IF EXISTS idx_incidents_time;
+                DROP INDEX IF EXISTS idx_incidents_region;
                 DROP INDEX IF EXISTS idx_raw_reports_processed;
+                DROP INDEX IF EXISTS idx_raw_reports_time;
+                DROP INDEX IF EXISTS idx_raw_reports_source;
+                DROP INDEX IF EXISTS idx_verification_logs_incident;
             """))
             
             conn.commit()
