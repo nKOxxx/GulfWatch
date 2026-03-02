@@ -287,8 +287,8 @@ async def get_incidents(
     response = []
     for i in incidents:
         # Extract lat/lng from geography
-        result = db.execute(text(
-            "SELECT ST_Y(location::GEOMETRY) as lat, ST_X(location::GEOMETRY) as lng FROM incidents WHERE id = :id",
+        result = db.execute(
+            text("SELECT ST_Y(location::GEOMETRY) as lat, ST_X(location::GEOMETRY) as lng FROM incidents WHERE id = :id"),
             {'id': i.id}
         ).first()
         
@@ -362,8 +362,8 @@ async def get_incident_detail(
         raise HTTPException(status_code=404, detail="Incident not found")
     
     # Get coordinates
-    result = db.execute(text(
-        "SELECT ST_Y(location::GEOMETRY) as lat, ST_X(location::GEOMETRY) as lng FROM incidents WHERE id = :id",
+    result = db.execute(
+        text("SELECT ST_Y(location::GEOMETRY) as lat, ST_X(location::GEOMETRY) as lng FROM incidents WHERE id = :id"),
         {'id': incident.id}
     ).first()
     
