@@ -189,6 +189,46 @@ async def reset_database():
         raise HTTPException(status_code=500, detail=f"Database reset failed: {str(e)}")
 
 
+@app.get("/admin/migrate")
+@app.post("/admin/migrate")
+async def run_migration():
+    """Run database migrations (admin only)"""
+    from sqlalchemy import text
+    from models import engine
+    
+    try:
+        with engine.connect() as conn:
+            # Add source columns if they don't exist
+            conn.execute(text("""
+                ALTER TABLE incidents 
+                ADD COLUMN IF NOT EXISTS source_handle VARCHAR(100),
+                ADD COLUMN IF NOT EXISTS source_name VARCHAR(200),
+                ADD COLUMN IF NOT EXISTS source_platform VARCHAR(50) DEFAULT 'twitter',
+                ADD COLUMN IF NOT EXISTS external_id VARCHAR(100),
+                ADD COLUMN IF NOT EXISTS source_url TEXT;
+            """))
+            
+            # Make location nullable
+            conn.execute(text("""
+                ALTER TABLE incidents 
+                ALTER COLUMN location DROP NOT NULL;
+            """))
+            
+            # Create index
+            conn.execute(text("""
+                CREATE INDEX IF NOT EXISTS idx_incidents_source_handle ON incidents(source_handle);
+            """))
+            
+            conn.commit()
+        
+        return {
+            "status": "success",
+            "message": "Migration complete - source columns added"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Migration failed: {str(e)}")
+
+
 @app.get("/admin/ingest-twitter")
 @app.post("/admin/ingest-twitter")
 async def ingest_twitter(db: Session = Depends(get_db)):
