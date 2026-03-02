@@ -305,6 +305,63 @@ async def ingest_twitter(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Ingestion failed: {str(e)}")
 
 
+@app.get("/admin/backfill-24h")
+@app.post("/admin/backfill-24h")
+async def backfill_24h(db: Session = Depends(get_db)):
+    """Backfill last 24 hours from all monitored Twitter accounts (admin only)"""
+    try:
+        from ingestion.twitter import TwitterIngestion
+        
+        ingestion = TwitterIngestion(db)
+        result = ingestion.backfill_last_24h()
+        
+        if result["status"] == "error":
+            raise HTTPException(status_code=500, detail=result["error"])
+        
+        # Auto-verify any new reports from official sources
+        from models import RawReportCRUD
+        unprocessed = RawReportCRUD.get_unprocessed(db, limit=100)
+        verified_count = 0
+        
+        for report in unprocessed:
+            incident = ingestion.auto_verify_official(report)
+            if incident:
+                verified_count += 1
+        
+        result["auto_verified"] = verified_count
+        result["message"] = f"Backfilled {result['total_new_reports']} reports, auto-verified {verified_count} incidents"
+        
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Backfill failed: {str(e)}")
+
+
+@app.get("/admin/clear-demo-data")
+@app.post("/admin/clear-demo-data")
+async def clear_demo_data(db: Session = Depends(get_db)):
+    """Clear all demo/incident data and reset for real ingestion (admin only)"""
+    try:
+        from models import Incident, RawReport
+        
+        # Count before deletion
+        incident_count = db.query(Incident).count()
+        report_count = db.query(RawReport).count()
+        
+        # Delete all incidents and reports
+        db.query(Incident).delete()
+        db.query(RawReport).delete()
+        db.commit()
+        
+        return {
+            "status": "success",
+            "message": f"Cleared {incident_count} incidents and {report_count} raw reports",
+            "cleared_incidents": incident_count,
+            "cleared_reports": report_count
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Clear failed: {str(e)}")
+
+
 @app.get("/admin/demo-incidents")
 async def create_demo_incidents(db: Session = Depends(get_db)):
     """Create demo incidents for testing (admin only)"""

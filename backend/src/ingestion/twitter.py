@@ -283,7 +283,11 @@ class TwitterIngestion:
                 total_credibility=source.credibility_score,
                 verified_by=source.id,
                 verification_method='single_official',
-                is_active=True
+                is_active=True,
+                source_handle=source.handle,
+                source_name=source.name,
+                source_platform=source.platform or 'twitter',
+                source_url=f"https://twitter.com/{source.handle}/status/{report.external_id}" if report.external_id else None
             )
             
             self.db.add(incident)
@@ -299,6 +303,97 @@ class TwitterIngestion:
             return incident
         
         return None
+    
+    def backfill_last_24h(self) -> Dict:
+        """Backfill last 24 hours of tweets from all monitored accounts"""
+        from datetime import timedelta
+        
+        hours_back = 24
+        start_time = (datetime.utcnow() - timedelta(hours=hours_back)).isoformat() + "Z"
+        
+        print(f"🔍 Backfilling last {hours_back} hours from all accounts...")
+        print(f"   Start time: {start_time}")
+        
+        if not TWITTER_BEARER_TOKEN:
+            print("⚠️ No Twitter token - cannot backfill")
+            return {"status": "error", "error": "TWITTER_BEARER_TOKEN not set"}
+        
+        all_handles = (self.UAE_HANDLES + self.SAUDI_HANDLES + 
+                      self.QATAR_HANDLES + self.BAHRAIN_HANDLES + 
+                      self.KUWAIT_HANDLES + self.ISRAEL_HANDLES)
+        
+        total_new = 0
+        total_errors = 0
+        results_by_handle = {}
+        
+        for handle in all_handles:
+            try:
+                print(f"\n📡 Checking @{handle}...")
+                
+                # Get user ID first
+                user_url = f"{self.BASE_URL}/users/by/username/{handle}"
+                headers = {"Authorization": f"Bearer {TWITTER_BEARER_TOKEN}"}
+                
+                response = httpx.get(user_url, headers=headers, timeout=30.0)
+                if response.status_code != 200:
+                    print(f"   ⚠️ Could not get user ID for @{handle}")
+                    total_errors += 1
+                    continue
+                
+                user_id = response.json()['data']['id']
+                
+                # Get tweets from last 24h
+                tweets_url = f"{self.BASE_URL}/users/{user_id}/tweets"
+                params = {
+                    "start_time": start_time,
+                    "max_results": 100,
+                    "tweet.fields": "created_at,referenced_tweets"
+                }
+                
+                tweets_response = httpx.get(tweets_url, headers=headers, params=params, timeout=30.0)
+                
+                if tweets_response.status_code != 200:
+                    print(f"   ⚠️ Error fetching tweets: {tweets_response.status_code}")
+                    total_errors += 1
+                    continue
+                
+                tweets_data = tweets_response.json()
+                tweets = tweets_data.get('data', [])
+                
+                print(f"   Found {len(tweets)} tweets in last 24h")
+                
+                # Process tweets
+                threat_count = 0
+                for tweet in tweets:
+                    report = self.process_tweet(tweet, handle)
+                    if report:
+                        total_new += 1
+                        threat_count += 1
+                
+                results_by_handle[handle] = {
+                    "tweets_checked": len(tweets),
+                    "threats_found": threat_count
+                }
+                
+            except Exception as e:
+                print(f"   ❌ Error processing @{handle}: {e}")
+                total_errors += 1
+                results_by_handle[handle] = {"error": str(e)}
+        
+        summary = {
+            "status": "success",
+            "hours_back": hours_back,
+            "total_new_reports": total_new,
+            "errors": total_errors,
+            "accounts_checked": len(all_handles),
+            "by_account": results_by_handle
+        }
+        
+        print(f"\n✅ Backfill complete!")
+        print(f"   New threat reports: {total_new}")
+        print(f"   Errors: {total_errors}")
+        
+        return summary
 
 
 # Run if executed directly
