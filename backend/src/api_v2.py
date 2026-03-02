@@ -217,6 +217,8 @@ async def health_check():
         "database_url_configured": bool(os.getenv('DATABASE_URL')),
         "database_url_masked": db_url_masked[:50] + "..." if len(db_url_masked) > 50 else db_url_masked,
         "database_connected": False,
+        "twitter_token_configured": bool(os.getenv('TWITTER_BEARER_TOKEN')),
+        "twitter_token_prefix": os.getenv('TWITTER_BEARER_TOKEN', '')[:10] + "..." if os.getenv('TWITTER_BEARER_TOKEN') else None,
         "error": None
     }
     
